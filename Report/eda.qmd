@@ -1,0 +1,202 @@
+---
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+# 3. Visualization
+
+```{r, echo = FALSE, message = FALSE, include=FALSE}
+#graph source
+source(here::here("Script/Plotting.R"))
+source(here::here("Script/Clustering.R"))
+```
+
+## 3.1 Crime
+
+### 3.1.1 Evolution of the total crime rate
+
+In this graphic we chose to compute the crime rate per hundred persons in the 5 departments with the biggest and the 5 with the lowest crime rate.
+
+```{r, echo=FALSE, message=FALSE}
+crime_plot
+```
+
+In this graphic we chose to compute the crime rate per hundred persons in the 5 departments with the highest crime rate and those with the lowest crime rate.
+The first thing we can observe is the major disparity between the average crime number in those departments.
+In fact the highest crime rate in the Paris is almost 5 times higher than the Aveyron 30.85 vs 145.25 It's important to note that the departments with the higher crime rate are the one encompassing the biggest cities in France: Paris and it's suburbs of "Seine-Saint-Denis" and "Hauts-de-Seine", Marseille is in the "Bouches-du_Rhône", Lyon is located in the "Rhône".
+We can start to understand that density may be a key factor in determining crime rate.
+
+Evolution of Crime in the 5 most criminal departments
+
+```{r, echo=FALSE, message=FALSE}
+Most_plot
+```
+
+Here we can observe that the total crimes in the most criminal departments are lower than what they were twenty years ago in the city of Paris (75) and Marseille (13) but are sensibly the same or higher in the peripheral areas of Paris (92/93) and in the city of Lyon (69).
+This can possibly be explained by the huge increase of density of population in the peripheral areas of big cities in France.
+
+```{r, echo=FALSE, message=FALSE}
+Least_plot 
+```
+
+This graph represents the annual amount of crimes in the 5 least criminal departments.
+Here we can assume that the number of crimes in the safest departments is quite stable through the years.
+We also observe the small variation due to COVID-19 Pandemic
+
+### 3.1.2 Types of crime commited
+
+We start by looking at the evolution of the most common types of crime by year in France.
+
+```{r, echo=FALSE, message=FALSE}
+evol5
+```
+
+Here we can see that the most common crime in France is deliberate destruction and damage.
+The effect of the COVID-19 pandemic can also be observed as most crimes have seen an overall drop in 2020.
+For example, theft without violence saw a sharp drop and its levels have not gone back to 2019 levels of theft.
+
+The Types of crime committed also depend on the location.
+
+```{r, echo=FALSE, message=FALSE}
+plot75
+plot18
+```
+
+In these graphs, we can see the difference in the types of crime committed in the Paris department and in the Cher department.
+Cher is sparsely populated department.
+Here we observe that in Paris, theft without violence is the number one committed crime.
+This is surely due to Paris being a big city with many tourists and as such many pickpockets.
+This may not be the case in the Cher region with only 300'000 inhabitants.
+In the Cher, theft is less prevalent with the biggest Crime rate being deliberate destruction and damage.
+Followed by Burglaries.
+
+## 3.2 Unemployment dataset
+
+### 3.2.1 Evolution of the unemployment rate
+
+Let's now take a look at our first variable: Unemployment.
+Unemployment in France has evolved through time and has usually been higher than unemployment in Switzerland.
+
+```{r, message=FALSE, echo = FALSE}
+unemploy_overall
+```
+
+We can observe a huge increase in the unemployment rate in the 90's in France.
+As we know after the Second World War, European countries had an important period of economic growth, this period is known as the « 30 glorieuses ».
+This period matched with an important demand of workers, from Europe and from other continents.
+There was a need to rebuild the country and an important diversification of the jobs with help of technological progress.
+In the early 80's, an important recession started in Europe, with a decrease of job creation in most of the important European countries, especially Germany, Great Britain and France.
+The the unemployment rate was approximately increasing by 1% a year in France in 1990, to reach the record rate of 11% in 1997.
+This is mainly explained by the two oil shocks in the 70's and 80's.
+The French president at the time, Francois Mitterand said in 1993 : « *In terms of unemployment, we've tried everything and we've failed everything* ».
+Following this recession France had an important decrease of unemployment rate, the explanations are multiple but the most plausible is the creation of the Euro zone and currency.
+This tendency lasted until the major financial crisis of 2008.
+In the last decade the unemployment rate has been mastered once again until the COVID 19 pandemic in 2020 which created a massive suppression of jobs in various areas such as the show industry or the food service sector.
+
+### 3.2.2 Unemployment by department
+
+```{r, message=FALSE, echo=FALSE}
+Bars
+plot_map
+```
+
+We can observe with this graph that there's an important disparity in unemployment rates in France.
+It's also relevant that one of the departments with the higher crime rate which we've seen before, is also one of the departments with the higher crime rates (93).
+This may be an indication of what we could possibly find with the statistical regressions.
+
+### 3.3 Maps
+
+```{r, message=FALSE, echo=FALSE}
+crime_map
+```
+This map compute the crime rate in every French department and shows us the important disparity in the amount of crimes committed across the country.
+
+```{r, message=FALSE, echo=FALSE}
+lepen_map
+```
+
+This map shows us the score in the second round of the French presidential election of 2017, which we choose to compute as a possible explanation variable.
+As we know Emmanuel Macron has been elected president with 66.10% so the departments overall voted for him, however it is interesting to see the departments where Marine LePen had an important share of the votes.
+Here those departments are represented with a darker color.
+
+```{r, message=FALSE, echo=FALSE}
+school_map
+```
+here this map shows the school pass rate for each department at the end of middle school. Unfortunately, no clear trend seems to emerge from the map. Futhermore, the difference between the highest value (**0.9305**) and the lowest value (**0.8274**) is only of 10%. This means that all other values are contained within only 10%. Showing them on a map with colors tends to over-exagerate the differences between values. As such, this map has poor vizualization power and may even be considered somewhat misleading. It is still left here in the intermediary report, but may be removed from the final report.
+
+
+```{r, message=FALSE, echo=FALSE}
+immig_map
+```
+
+Lastly, this map shows us th immigration rate, be department. As we can see, Immigrants are mostly located in the vicinity of the Paris region. Other notable areas of higher immigration are border regions in the south and in the east. 
+
+## 4. Clustering 
+
+We will now run a cluster analysis of each department, we want to see if some departments have simmilarities.
+
+First, we compute the correlation matrix.
+
+```{r, message=FALSE, echo=FALSE}
+ d <- data.frame(cor(Data_to_cluster))
+knitr::kable(d, "html")
+```
+
+As we can see, Density is highly correlated with Crime Rates. In contrast, Density and unemployment have a very low correlation. Other interesting Correlations are the one with Immigration and Crime rates, Unemployment and the Score of Marine Lepen.
+
+### 4.1 Hierarchical clustering
+We now compute the distance matrix. Using this distance matrix, we run a hierarchical clustering analysis using the average distance method.
+
+we get the following dendrogram. 
+
+```{r, message=FALSE, echo=FALSE}
+plot(Dep_completelink)
+```
+
+This graph tells us that observation 76 stands out from the rest, Observation 76 is actually Paris. Paris is a clear outlier. 
+Based on this graph we could try to use 3 clusters. 
+
+We can now visualize this using our 2 most correlated variables, Crime rates and Density.
+```{r, message=FALSE, echo=FALSE}
+plot_cluster
+```
+
+This is quite interesting, our 3 clusters are Paris, the Paris region and the rest of France. 
+To further show this, we can see this in a map format.
+```{r, message=FALSE, echo=FALSE}
+cluster_map
+```
+
+### 4.2 K-means clustering
+To further our analysis and chose a number of clusters, we will run  K-means analysis with n-start = 25. Our data will also be scaled to reduce differences.
+This approach is what is recommended, we will run the same clustering 25 times with different centers as we initialize. Running it 25 times will ensure that we get the best clusters we can. 
+
+We get the followig scree plot from our analysis:
+```{r, message=FALSE, echo=FALSE}
+scree_plot
+```
+as we can tell, our optimal number of clusters seems to be 6 clusters.
+
+We'll visualize this using a cluster plot and a facet wrap of Lepen Scores and Unemployment rate, we previously say that the correlation was decently high.
+```{r, message=FALSE, echo=FALSE}
+cluster_plot
+cluster_plot + facet_wrap(~clust_number, nrow = 2) 
+```
+
+As before, we will map it for more clarity.
+```{r, message=FALSE, echo=FALSE}
+cluster_map_means
+```
+
+Overall, during this clustering exercise, our main learning is that Paris and it's suburbs are very big compared to the rest of France, so much that it tends skew the analysis. For our final report, it could be interesting to remove Paris and the prarisian region to be able to conduct an analysis of the rest of our departments
+
+
+
+
+
+
+
+
+
+

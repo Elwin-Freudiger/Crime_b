@@ -1,0 +1,95 @@
+---
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+# 1. Introduction
+
+## 1.1 Overview and motivations
+
+This project will analyze the factors influencing Criminality in France.
+We chose this Subject because we are both french and criminality
+consistently ranks as one of the most important priority for the French
+population. In our study, we wanted to focus on the social and economic
+factors contributing to this issue. France is often regarded as one of
+the major world powers, and yet, it is clear that similarly to the rest
+of the world, the french population is feeling more and more insecure
+regarding crime. Crime is impacting the political landscape very much.
+This subject has also made it's way into everyday discussions as it
+proves to be a polarizing topic. In the last thirty years, Politicians
+have often promised to tackle crime through several means, and as the
+population wants more to be done against it, the government has often
+made it one of their top priority.
+
+In recent times, there has been a noticeable rise in criminal activities
+across France. Regions such as "Seine Saint Denis" in the Paris area.
+has seen emboldened criminals committing crimes in broad daylight,
+contributing to a perception of increased chaos and increasing the
+feeling of insecurity. Similar concerns have surfaced in cities like
+Marseille. Additionally, it's worth noting that the prison population
+has reached an all-time high in July 2023. But what are the reasons for
+increased criminality?
+
+The goal of our research is to synthesize the main reasons behind
+criminality. Medias have often presented various reasons to explain
+crime, our research will look at those hints and see if they may have
+any statistical significance. It should be noted that data regarding
+"Ethnic origin" is not available, this variable is sometimes singled out
+as one of the driver of criminality and unlike in the United States,
+France has outlawed any form of statistics on this subject. as such, we
+will mostly focus on socio-economics drivers behind crime. France is
+facing substantial socio-economics issues, unemployment, poverty,
+conditions of leaving, and school level. Our project explores the link
+between socio-economic factors and criminality rates. Establishing such
+a link would give a new outlook on crime and its causes. Additionally we
+would like to know whether, this data could be used by the government to
+address public safety. Moreover, what are the core human drivers that
+push humans to commit crimes? How their socio-economic environment and
+their educational path may impact their ability to commit crimes?
+
+### 1.2 Associated papers
+
+https://www.institutpourlajustice.org/content/2017/12/Pauvreté-et-délinquance.pdf
+
+### 1.3 Research questions
+
+The purpose of this study is to evaluate the impact of different
+socioeconomic factors on criminality in France. We are using for that a
+french government database which divide crimes in 14 categories:
+
+1.  Destruction and intentional damages
+2.  Thefts without violence against people
+3.  Residential burglaries
+4.  Assault and battery
+5.  Thefts from vehicles
+6.  Domestic assault and battery
+7.  Theft of vehicle accessories
+8.  Other intentional assault and battery
+9.  Sexual violence
+10. Violent robberies without weapons
+11. Drug trafficking
+12. Robbery with weapons
+
+We will consider the following macroeconomic variables:
+
+-   Poverty rate,
+-   Unemployment rate
+-   School indicators(Success rate at an exam/Share of adults without a
+    dimploma)
+-   Density of Population
+-   Results of previous presidential election.
+
+These are the following question we will focus on:
+
+-   Can the criminality rate in France be explained using the
+    unemployment rate?
+-   Can the criminality rate in France be explained using the poverty
+    rate?
+-   Can the criminality rate in France be explained using education
+    indicators ?
+-   Can the density of population in territories explain criminality?
+-   Can the immigration rate explain criminality?
+-   Can the previous presidential results in territories have an impact
+    on criminality?
+-   Is there a correlation between these mentioned variables?
