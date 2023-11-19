@@ -2,8 +2,6 @@
 title: "What is the impact of socio-economic factors on Criminality in France?"
 author: "Pierre Monari, Elwin Freudiger"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-project:
-  output_dir: docs
 format:
   html:
     toc: TRUE
