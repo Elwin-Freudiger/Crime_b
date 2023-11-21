@@ -282,6 +282,22 @@ Crime_2019_town <- Type_per_year |>
   rename(Town_code = Town, Dep_number = Departement)
 
 
+#Create a dataset where we look at the rate for each type of crime
+Crime_type_town <- Type_per_year |>
+  filter(Year == 19) |>
+  rename(Town_code = Town, Dep_number = Departement) |>
+  select(Dep_number, Town_code, Type, Rate_per_1k) |>
+  pivot_wider(names_from = Type, values_from = Rate_per_1k) |>
+  select(Dep_number, Town_code, "Cambriolages de logement", 
+         "Coups et blessures volontaires", 
+         "Destructions et dégradations volontaires", 
+         "Usage de stupéfiants",
+         "Vols sans violence contre des personnes")
+
+Crime_type_town[is.na(Crime_type_town)] <- 0
+
+
+
 #####################################################################################
 
 #Dataset of 2017 election results by town
@@ -444,3 +460,19 @@ Everything_by_town_clean <- Everything_by_town |>
          Immig_rate, Unemp_2019)
 
 #write.csv(Everything_by_town_clean, "data_end/Everything_by_town_clean.csv")
+
+#Join for type
+
+Crime_per_type_town <- Crime_type_town |>
+  full_join(Everything_by_town_clean, join_by(Town_code)) |>
+  select(Dep_number.x, Town_code, Town_name, 
+         Total_pop, Total_crime, Rate_per_1k, 
+         "Cambriolages de logement", "Coups et blessures volontaires", "Destructions et dégradations volontaires", 
+         "Usage de stupéfiants", "Vols sans violence contre des personnes",
+         Density_2019, Lepen, Win_Lepen, 
+         Povrety_2019, Intensity_povrety, No_diploma_rate1k, 
+         Immig_rate, Unemp_2019) |>
+  na.omit()
+
+write.csv(Crime_per_type_town, "data_end/Crime_per_type_town.csv")
+
