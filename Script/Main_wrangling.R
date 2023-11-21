@@ -195,6 +195,7 @@ Full_data_dep <- Unemp |>
   full_join(Immig_2019, join_by("Dep_name")) |>
   full_join(Dens_2019, join_by("Dep_number"))
 
+
 #####################################################################################
 #####################################################################################
 #####################################################################################
@@ -388,6 +389,7 @@ Pop_no_diploma <- rbind(Pop_no_diploma, Paris_tot)
 
 #####################################################################################
 
+#Add poverty
 Pov_2019 <- read_delim(here::here("Raw_data/FILO2019_DEC_Pauvres_COM.csv"), 
                        delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
@@ -400,13 +402,36 @@ Povr_2019 <- Pov_2019 |>
 
 #####################################################################################
 
+#Add immigration
+Immig_by_town <- read_delim("Raw_data/Immig_by_town.csv", 
+                            delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+Immig_2019_town <- Immig_by_town |>
+  select(CODGEO, IMMI, NB) |>
+  rename(Town_code = CODGEO) |>
+  filter(IMMI == 1) |>
+  filter(!str_detect(Town_code, "^97")) |>
+  group_by(Town_code) |>
+  summarize(NB = sum(NB)) |>
+  left_join(Pop_by_town, join_by(Town_code)) |>
+  mutate(Immig_rate = (NB/Total_pop)*1000 ) |>
+  na.omit() |>
+  select(Town_code, Immig_rate)
+
+#####################################################################################
+
 #Add them all together
 Everything_by_town <- Crime_2019_town |>
   full_join(Pop_by_town, join_by(Town_code)) |> 
   full_join(Density_town, join_by(Town_code)) |>
   full_join(Vote_2017, join_by(Town_code)) |>
   full_join(Povr_2019, join_by(Town_code)) |>
-  full_join(Pop_no_diploma, join_by(Town_code))
+  full_join(Pop_no_diploma, join_by(Town_code)) |>
+  full_join(Immig_2019_town, join_by(Town_code)) |>
+  left_join(Unemp, join_by(Dep_number))
+
+#We also want to add unemployment from our department dataset, the only value we cannot find by town. 
+
 
 #remove the Na's, and only select important values
 Everything_by_town_clean <- Everything_by_town |>
@@ -414,6 +439,6 @@ Everything_by_town_clean <- Everything_by_town |>
   select(Dep_number, 
          Town_code, 
          Town_name, 
-         Total_pop, Rate_per_1k, Density_2019, Lepen, Win_Lepen, Povrety_2019, Intensity_povrety, No_diploma_rate1k)
+         Total_pop, Rate_per_1k, Density_2019, Lepen, Win_Lepen, Povrety_2019, Intensity_povrety, No_diploma_rate1k, Immig_rate, Unemp_2019)
 
 write.csv(Everything_by_town_clean, "data_end/Everything_by_town_clean.csv")

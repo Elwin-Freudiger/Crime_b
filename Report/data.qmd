@@ -155,7 +155,7 @@ Pop_2019 <- read_delim(here::here("Raw_data/Pop_2019.csv"),
 knitr::kable(head(Pop_2019), "html")
 ```
 
-This dataset is quite html, we have a column indicating the level, here is is towns, the CODGEO mentioned above, the town name, followed by the gender and age group. finally we have the number of inhabitants that fit these criterias.
+This dataset is quite simple, we have a column indicating the level, here is is towns, the CODGEO mentioned above, the town name, followed by the gender and age group. finally we have the number of inhabitants that fit these criterias.
 
 Source: [Density by town](https://www.insee.fr/fr/statistiques/6456157?sommaire=6456166)
 
@@ -189,7 +189,7 @@ Election_quarto <- read_excel(here::here("Raw_data/Presidentielle_2017_Resultats
 knitr::kable(head(Election_quarto), "html")
 ```
 
-This dataset is very similar to the one for departements.
+This dataset is very similar to the one for departments.
 
 Source: [2017 Election results by town](https://www.data.gouv.fr/fr/datasets/election-presidentielle-des-23-avril-et-7-mai-2017-resultats-definitifs-du-2nd-tour-par-communes/)
 
@@ -206,6 +206,19 @@ knitr::kable(head(Pov_2019), "html")
 This dataset does not have easily understable column names. The first is CODGEO, the town code. The columns starting with "TP" indicate poverty rates. the number afterwards indicate the rate at which people are considered poor. For example, with 60% which is the commonly used cutoff for poverty, the number means that a certain percentage of people earn only 60% of the median revenue in France. The column "TP60IP19" is the poverty intensity. basically how far from the median revenue are those poor people. We will also use this infomarmation. The remaining columns divide those values by age
 
 Source: [Poverty by town](https://www.insee.fr/fr/statistiques/6036907)
+
+#### Immigration by town
+
+```{r, echo=FALSE, message=FALSE}
+
+Immig_by_town <- read_delim("Raw_data/Immig_by_town.csv", 
+                            delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+knitr::kable(head(Immig_by_town), "html")
+```
+
+Here we have the number of immigrants by town, age and gender. The first 3 columns are town indicators, code and name. 
+the AGE4 variable indicate the age group. IMMI is the immigration status, 1 for immigrant, and 2 for non immigrants. SEXE is the gender, 1 for men and 2 for women and NB is the total number.
 
 ## 2.2 Wrangling
 
@@ -405,7 +418,7 @@ Immig_2019 <- Immigration_2019 |>
   select(Dep_name, Immig_rate)
 ```
 
-Immigration is quite html, we select only metropolitan departments with the slice() function. We then select columns that we need, rename them in english and compute the immigration rate which is Total number of immigrants divided by the total population.
+Immigration is quite simple, we select only metropolitan departments with the slice() function. We then select columns that we need, rename them in english and compute the immigration rate which is Total number of immigrants divided by the total population.
 
 #### Population density
 
@@ -494,7 +507,7 @@ Pop_by_town <- Pop_2019 |>
 view(Pop_by_town)
 ```
 
-The cleaning for this dataset is very html, we compute the sum of every age group and gender group to find the total number of inhabitants by town.
+The cleaning for this dataset is very simple, we compute the sum of every age group and gender group to find the total number of inhabitants by town.
 
 #### Population without a diploma
 
@@ -587,7 +600,25 @@ Povr_2019 <- Pov_2019 |>
          Intensity_povrety = TP60IP19)
 ```
 
-Poverty is quite html. we select our columns, rename them and we do not forget to omit values that were blank
+Poverty is quite simple we select our columns, rename them and we do not forget to omit values that were blank
+
+#### Immigration
+
+```{r, eval=FALSE}
+Immig_2019_town <- Immig_by_town |>
+  select(CODGEO, IMMI, NB) |>
+  rename(Town_code = CODGEO) |>
+  filter(IMMI == 1) |>
+  filter(!str_detect(Town_code, "^97")) |>
+  group_by(Town_code) |>
+  summarize(NB = sum(NB)) |>
+  left_join(Pop_by_town, join_by(Town_code)) |>
+  mutate(Immig_rate = (NB/Total_pop)*1000 ) |>
+  na.omit() |>
+  select(Town_code, Immig_rate)
+```
+
+Here we apply the same framework we have applied before. We select our needed columns, rename them. we then filter to only have the total of immigrants. then, we add the population from our previously created population dataset using **left_join()** we then compute the immigration rate, omit missing values.
 
 #### Join them into a single dataframe
 
