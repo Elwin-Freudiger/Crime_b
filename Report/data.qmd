@@ -1,4 +1,4 @@
-# 2. Data Wrangling
+# Data Wrangling
 
 ```{r, echo = FALSE, message = FALSE}
 library(readxl)
@@ -14,9 +14,9 @@ In this section,we will look at our raw datasets, what information they give us,
 
 Firstly, we will use a dataset with values by french state. This dataset will not be used for our Regression analysis as only having 95 observations is not enough to have a good statistical analysis.
 
-## 2.1 Raw datasets
+## Raw datasets
 
-### 2.1.1 Data by Department
+### Data by Department
 
 #### Population
 
@@ -115,7 +115,7 @@ knitr::kable(head(population_2019), "html")
 
 Source: [Population Density by state](https://www.insee.fr/fr/statistiques/6793282?sommaire=6793391#documentation)
 
-### 2.1.2 Data by town
+### Data by town
 
 #### Crime
 
@@ -126,7 +126,7 @@ Crimes <- read.csv(here::here("Raw_data/try.csv"), sep = ";")
 knitr::kable(head(Crimes, n=10), "html")
 ```
 
-This dataset is quite big with `{r}nrow(Crimes)`. The first column is the CODGEO, this is a towncode by the INSEE(French institute of statistics and economics studies) the first 2 numbers are the department that the town is located in and the last 3 numbers are the town number. This first column will be very useful because it is a unique number for each town and we will use it as our key. The second column is our year, the third is the type of crime commited. The fourth column "valeur.publiée" tells us if the town publishes their crime statistics or not. It should be noted that some town are coded as publishing although the value is missing. We will dive into this later in the EDA part of our report. We then have a column telling us the total number of crimes and one for crime rate for a thousand people. The remaining columns will not be used in our analysis. The remaining LOG variables are for households in the town and the mill is a "millésime" method of census that allows a census to be conducted every year at a smaller scale, this is useful to track changes in the population year by year, but it will not be used by us.
+This dataset is quite big with almost 3 million rows. The first column is the CODGEO, this is a towncode by the INSEE(French institute of statistics and economics studies) the first 2 numbers are the department that the town is located in and the last 3 numbers are the town number. This first column will be very useful because it is a unique number for each town and we will use it as our key. The second column is our year, the third is the type of crime commited. The fourth column "valeur.publiée" tells us if the town publishes their crime statistics or not. It should be noted that some town are coded as publishing although the value is missing. We will dive into this later in the EDA part of our report. We then have a column telling us the total number of crimes and one for crime rate for a thousand people. The remaining columns will not be used in our analysis. The remaining LOG variables are for households in the town and the mill is a "millésime" method of census that allows a census to be conducted every year at a smaller scale, this is useful to track changes in the population year by year, but it will not be used by us.
 
 Lastly, the rules for publishing data are the following: crime data is only published if the town records more than 5 instances of crime for 3 consecutive years. This is done to protect the privacy of the people involved and because the statistical analysis of such small data would not yield satisfying results.
 
@@ -220,9 +220,9 @@ knitr::kable(head(Immig_by_town), "html")
 Here we have the number of immigrants by town, age and gender. The first 3 columns are town indicators, code and name. 
 the AGE4 variable indicate the age group. IMMI is the immigration status, 1 for immigrant, and 2 for non immigrants. SEXE is the gender, 1 for men and 2 for women and NB is the total number.
 
-## 2.2 Wrangling
+## Wrangling
 
-### 2.2.1 By department
+### By department
 
 #### List of departements.
 
@@ -445,7 +445,7 @@ Full_data_dep <- full_join(List_depart, Unemp, join_by("Dep_name")) |>
   full_join(Dens_2019, join_by("Dep_number"))
 ```
 
-### 2.2.2 By Town
+### By Town
 
 #### Crime
 
@@ -651,7 +651,7 @@ Everything_by_town_clean <- Everything_by_town |>
 
 then, we omit our missing values, select only our very important values and we have our final dataset. that we may use for EDA and most importantly for our Regression analysis. Were we will predict the crime rate of a town using our independent variables.
 
-## 2.3 Final results
+## Final results
 
 We finally have these two datasets.
 

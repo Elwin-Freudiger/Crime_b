@@ -4,7 +4,7 @@ editor:
     wrap: sentence
 ---
 
-# 3. Visualization
+# Visualization
 
 ```{r, echo = FALSE, message = FALSE, include=FALSE}
 #graph source
@@ -12,9 +12,9 @@ source(here::here("Script/Plotting.R"))
 source(here::here("Script/Clustering.R"))
 ```
 
-## 3.1 Crime
+## Crime
 
-### 3.1.1 Evolution of the total crime rate
+### Evolution of the total crime rate
 
 In this graphic we chose to compute the crime rate per hundred persons in the 5 departments with the biggest and the 5 with the lowest crime rate.
 
@@ -44,7 +44,7 @@ This graph represents the annual amount of crimes in the 5 least criminal depart
 Here we can assume that the number of crimes in the safest departments is quite stable through the years.
 We also observe the small variation due to COVID-19 Pandemic
 
-### 3.1.2 Types of crime commited
+### Types of crime commited
 
 We start by looking at the evolution of the most common types of crime by year in France.
 
@@ -71,9 +71,9 @@ This may not be the case in the Cher region with only 300'000 inhabitants.
 In the Cher, theft is less prevalent with the biggest Crime rate being deliberate destruction and damage.
 Followed by Burglaries.
 
-## 3.2 Unemployment dataset
+## Unemployment dataset
 
-### 3.2.1 Evolution of the unemployment rate
+### Evolution of the unemployment rate
 
 Let's now take a look at our first variable: Unemployment.
 Unemployment in France has evolved through time and has usually been higher than unemployment in Switzerland.
@@ -94,7 +94,7 @@ Following this recession France had an important decrease of unemployment rate, 
 This tendency lasted until the major financial crisis of 2008.
 In the last decade the unemployment rate has been mastered once again until the COVID 19 pandemic in 2020 which created a massive suppression of jobs in various areas such as the show industry or the food service sector.
 
-### 3.2.2 Unemployment by department
+### Unemployment by department
 
 ```{r, message=FALSE, echo=FALSE}
 Bars
@@ -105,7 +105,7 @@ We can observe with this graph that there's an important disparity in unemployme
 It's also relevant that one of the departments with the higher crime rate which we've seen before, is also one of the departments with the higher crime rates (93).
 This may be an indication of what we could possibly find with the statistical regressions.
 
-### 3.3 Maps
+### Maps
 
 ```{r, message=FALSE, echo=FALSE}
 crime_map
@@ -132,7 +132,7 @@ immig_map
 
 Lastly, this map shows us th immigration rate, be department. As we can see, Immigrants are mostly located in the vicinity of the Paris region. Other notable areas of higher immigration are border regions in the south and in the east. 
 
-## 4. Clustering 
+## Clustering 
 
 We will now run a cluster analysis of each department, we want to see if some departments have simmilarities.
 
@@ -145,7 +145,7 @@ knitr::kable(d, "html")
 
 As we can see, Density is highly correlated with Crime Rates. In contrast, Density and unemployment have a very low correlation. Other interesting Correlations are the one with Immigration and Crime rates, Unemployment and the Score of Marine Lepen.
 
-### 4.1 Hierarchical clustering
+### Hierarchical clustering
 We now compute the distance matrix. Using this distance matrix, we run a hierarchical clustering analysis using the average distance method.
 
 we get the following dendrogram. 
@@ -168,7 +168,7 @@ To further show this, we can see this in a map format.
 cluster_map
 ```
 
-### 4.2 K-means clustering
+### K-means clustering
 To further our analysis and chose a number of clusters, we will run  K-means analysis with n-start = 25. Our data will also be scaled to reduce differences.
 This approach is what is recommended, we will run the same clustering 25 times with different centers as we initialize. Running it 25 times will ensure that we get the best clusters we can. 
 
