@@ -630,11 +630,15 @@ Everything_by_town <- Crime_2019_town |>
   full_join(Density_town, join_by(Town_code)) |>
   full_join(Vote_2017, join_by(Town_code)) |>
   full_join(Povr_2019, join_by(Town_code)) |>
-  full_join(Pop_no_diploma, join_by(Town_code))
+  full_join(Pop_no_diploma, join_by(Town_code)) |>
+  full_join(Immig_2019_town, join_by(Town_code)) |>
+  left_join(Unemp, join_by(Dep_number))
+
 summary(Everything_by_town)
 ```
 
 As we can see, Poverty is a smaller dataset. This may be a problem, but upon further inspection, we see that the smallest population is 1'700 inhabitants. And we still have around 5'000 observations. We previously thought about removing every observation where the number of inhabitants of a town was smaller than 200, because of the poor statistical analysis that would stem from such extreme values. the INSEE institute were most of our data has been collected recommends not doing any analysis on towns of less than 200 inhabitants. As such, the reduced number of observations with the poverty dataset is not a problem.
+We also add our unemployment numbers from our by_dep dataset because we were unable to find accurate unemployment numbers by department.
 
 ```{r, eval=FALSE}
 Everything_by_town_clean <- Everything_by_town |>
@@ -642,7 +646,7 @@ Everything_by_town_clean <- Everything_by_town |>
   select(Dep_number, 
          Town_code, 
          Town_name, 
-         Total_pop, Rate_per_1k, Density_2019, Lepen, Win_Lepen, Povrety_2019, Intensity_povrety, No_diploma_rate1k)
+         Total_pop, Rate_per_1k, Density_2019, Lepen, Win_Lepen, Povrety_2019, Intensity_povrety, No_diploma_rate1k, Immig_rate, Unemp_2019)
 ```
 
 then, we omit our missing values, select only our very important values and we have our final dataset. that we may use for EDA and most importantly for our Regression analysis. Were we will predict the crime rate of a town using our independent variables.
