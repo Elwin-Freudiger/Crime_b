@@ -9,7 +9,10 @@ library(gganimate)
 library(gifski)
 library(sf)
 library(ggspatial)
-
+install.packages("leaflet")
+library(leaflet)
+install.packages("leaflet.extras")
+library(leaflet.extras)
 
 #Plot the crime rate in 2019 of the most criminal states and least criminal states.
 Crime_2019 <- read.csv(here::here("data_end/Everything_by_dep.csv"))
@@ -200,4 +203,33 @@ school_map <- ggplot() +
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
   labs(title = "Middle school pass rate")
+
+
+
+#Now we will create a leaflet map at the Town level.
+
+Town_border <- st_read(here::here("Raw_data/TownGEO.geojson"))
+colnames(Town_border) <- c("Town_code", "Town_name", "geometry")
+Everything_by_town <- read_csv(here::here("data_end/Everything_by_town.csv"))
+both_town <- left_join(Town_border, Everything_by_town, join_by("Town_code"))
+
+summary(both_town)
+
+#plot the map with leaflet
+
+
+#By department
+pal <- colorNumeric("Blues", NULL)
+
+leaflet(both) %>%
+  addTiles() %>%
+  addPolygons(stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal(Lepen_score),
+              color = "white",
+              weight = 0.2,
+              label = ~paste0(Dep_name.x, ": ", Lepen_score)) %>%
+  addLegend(position = "bottomright", pal = pal, values = ~Lepen_score,
+            title = "Lepen Score", opacity = 1)
+
+
 
