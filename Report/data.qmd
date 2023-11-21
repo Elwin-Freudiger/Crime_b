@@ -474,9 +474,9 @@ We use this code to get the data by type and by year for each town. First, we on
 Crime_2019_town <- Type_per_year |>
   filter(Year == 19) |>
   group_by(Departement, Town) |>
-  summarize(Rate_per_1k = mean(Rate_per_1k)) |>
-  mutate(Town = paste0(Departement, Town)) |>
-  rename(Town_code = Town, Dep = Departement)
+  summarize(Rate_per_1k = mean(Rate_per_1k),
+         Total_crime = sum(Number)) |>
+  rename(Town_code = Town, Dep_number = Departement)
 ```
 
 We then summarize the rate value by town to use in our regression

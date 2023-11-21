@@ -277,7 +277,8 @@ PCA_rate <- Type_per_year |>
 Crime_2019_town <- Type_per_year |>
   filter(Year == 19) |>
   group_by(Departement, Town) |>
-  summarize(Rate_per_1k = mean(Rate_per_1k)) |>
+  summarize(Rate_per_1k = mean(Rate_per_1k),
+         Total_crime = sum(Number)) |>
   rename(Town_code = Town, Dep_number = Departement)
 
 
@@ -436,9 +437,10 @@ Everything_by_town <- Crime_2019_town |>
 #remove the Na's, and only select important values
 Everything_by_town_clean <- Everything_by_town |>
   na.omit() |>
-  select(Dep_number, 
-         Town_code, 
-         Town_name, 
-         Total_pop, Rate_per_1k, Density_2019, Lepen, Win_Lepen, Povrety_2019, Intensity_povrety, No_diploma_rate1k, Immig_rate, Unemp_2019)
+  select(Dep_number, Town_code, Town_name, 
+         Total_pop, Total_crime, Rate_per_1k,
+         Density_2019, Lepen, Win_Lepen, 
+         Povrety_2019, Intensity_povrety, No_diploma_rate1k, 
+         Immig_rate, Unemp_2019)
 
-write.csv(Everything_by_town_clean, "data_end/Everything_by_town_clean.csv")
+#write.csv(Everything_by_town_clean, "data_end/Everything_by_town_clean.csv")
