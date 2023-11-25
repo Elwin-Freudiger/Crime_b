@@ -232,4 +232,3 @@ leaflet(both) %>%
             title = "Lepen Score", opacity = 1)
 
 
-
