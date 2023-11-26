@@ -1,18 +1,13 @@
 # Analysis
 
 ```{r, echo = FALSE, message = FALSE}
-source(here::here("scripts/setup.R"))
+source(here::here("Script/Regression.R"))
 ```
 
--   Answers to the research questions
--   Different methods considered
--   Competing approaches
--   Justifications
+## Regression
+
+We will start by running a regression for all crimes combined. 
 
 
 
-```{r, echo=FALSE}
-
-
-```
 

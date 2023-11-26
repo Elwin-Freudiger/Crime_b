@@ -12,9 +12,14 @@ library(ggcorrplot)
 Everything_by_town_clean <- read_csv(here::here("data_end/Everything_by_town_clean.csv"))
 
 #We first create a model with all the explicative variables  
-Full_model <- lm(formula = Rate_per_1k ~ Density_2019 + Win_Lepen + 
-                   Povrety_2019 + No_diploma_rate1k + Immig_rate + 
-                   Unemp_2019 + Intensity_povrety + Total_pop, 
+Full_model <- lm(formula = Rate_per_1k ~ Density_2019 + 
+                   Win_Lepen + 
+                   Povrety_2019 + 
+                   No_diploma_rate1k + 
+                   Immig_rate + 
+                   Unemp_2019 + 
+                   Intensity_povrety +
+                   Total_pop, 
                  data = Everything_by_town_clean)
 summary(Full_model)
 #We can observe that not all the variables are significant
@@ -37,7 +42,7 @@ summary(Reduce_model)
 #We will now compare the previous full modelModelByTown with the reduce one ReduceModel
 
 lrtest(Full_model, Reduce_model)
-"The model with the higher likelihood ratio will be the best model "
+#"The model with the higher likelihood ratio will be the best model "
 
 
 Single_model <- lm(Rate_per_1k ~ Intensity_povrety, data = Everything_by_town_clean)
@@ -46,7 +51,6 @@ summary(Single_model)
 #compute correlation matrix
 
 corr_matrix <- cor(Everything_by_town_clean[5:14])
-corr_matrix
 
 
 ############
@@ -63,157 +67,143 @@ Crime_num <- Crime_type[6:21]
 #We first run a correlation analysis
 
 corr_matrix <- cor(Crime_num)
-ggcorrplot(corr_matrix)
+#visualize the corrplot
+corplot <- ggcorrplot(corr_matrix)
+corr_matrix
 
 #Linear regressions with the type of crimes committed + vif 
 
 #Coups et blessures volontaires/(Assault and battery)
 
-Modelfullcoups <- lm(formula= Coups.et.blessures.volontaires ~ 
+Assault_model_full <- lm(formula= Coups.et.blessures.volontaires ~ 
                        Density_2019 + Povrety_2019 + No_diploma_rate1k + 
                        Immig_rate + Unemp_2019 + Win_Lepen +
-                       Intensity_povrety, data = Crime_per_type_town)
+                       Intensity_povrety, data = Crime_type)
 
-
-ModelCoupsBlessuresNULL <- lm(formula = Coups.et.blessures.volontaires ~ 1, data =  Crime_per_type_town)
+Assault_model_null <- lm(formula = Coups.et.blessures.volontaires ~ 1, data =  Crime_type)
 
 #stepwise regression
-step(Modelfullcoups, scope = list(lower= ModelCoupsBlessuresNULL, upper=Modelfullcoups),
+step(Assault_model_full, scope = list(lower= Assault_model_null, upper=Assault_model_full),
      direction = "backward")
 
 #after computing the stepwise regression with the backward
 #method we decided to keep only the Poverty, Immigration, Density, NoDiploma, IntensityPoverty 
 #variables as they are the most useful in the model 
 
-ModelCoupsBlessuresFINAL <- lm(formula= Coups.et.blessures.volontaires ~ 
+Assault_model_final <- lm(formula= Coups.et.blessures.volontaires ~ 
                                  Density_2019 +
                                  Povrety_2019 +
                                  No_diploma_rate1k +
                                  Immig_rate + 
-                                 Intensity_povrety, data = Crime_per_type_town)
+                                 Intensity_povrety, data = Crime_type)
 
+#how do they look ? Print summary, vif and Plot it
+summary(Assault_model_final)
+vif(Assault_model_final)
 
-summary(ModelCoupsBlessuresFINAL)
-vif(ModelCoupsBlessuresFINAL)
+#Cambriolages(Burglary)
+Burglary_model_full <- lm(formula=  Cambriolages.de.logement ~ 
+                            Density_2019 +  
+                            Povrety_2019 +  
+                            No_diploma_rate1k + 
+                            Immig_rate +  
+                            Unemp_2019 +
+                            Win_Lepen +
+                            Intensity_povrety, data = Crime_type)
 
-#Cambriolages
+Burglary_model_null <- lm(formula = Cambriolages.de.logement ~ 1, data = Crime_type)
 
-
-
-
-Modelfullcambriolages <- lm(formula=  Cambriolages.de.logement ~ 
-                               Density_2019
-                            +  Povrety_2019 +  No_diploma_rate1k + 
-                               Immig_rate +  Unemp_2019 +
-                               Win_Lepen +
-                               Intensity_povrety)
-
-
-
-
-ModelCambriolagesNULL <- lm(formula =  Cambriolages.de.logement ~ 1)
-
-
-
-
-step(Modelfullcambriolages, scope = list(lower= ModelCambriolagesNULL, upper=Modelfullcambriolages),
+step(Burglary_model_full, scope = list(lower = Burglary_model_null, upper = Burglary_model_full),
      direction = "backward")
-
-
 #With AIC rate we decide to keep only the following variables: NoDIploma, 
 #Unemployment, Poverty, Immigration, Intensity poverty
+Burglary_model_final <-  lm(formula=  Cambriolages.de.logement ~ 
+                              Povrety_2019 +  
+                              No_diploma_rate1k + 
+                              Immig_rate +  
+                              Unemp_2019 +
+                              Intensity_povrety, data = Crime_type)
+
+summary(Burglary_model_final)
+vif(Burglary_model_final)
+
+#Destructions et dégradations volontaires(willful destruction and damage)
 
 
-ModelCambriolagesFINAL <-  lm(formula=  Cambriolages.de.logement ~ 
-                                 Povrety_2019 +  No_diploma_rate1k + 
-                                 Immig_rate +  Unemp_2019 +
-                                 Intensity_povrety)
+Damage_model_full <- lm(formula=  Destructions.et.degradations.volontaires ~ 
+                          Density_2019 +
+                          Povrety_2019 +  
+                          No_diploma_rate1k + 
+                          Immig_rate +  
+                          Unemp_2019 +
+                          Win_Lepen +
+                          Intensity_povrety, data = Crime_type)
 
 
-summary(ModelCambriolagesFINAL)
-vif(ModelCambriolagesFINAL)
-
-#Destructions et dégradations volontaires
+Damage_model_null <- lm(formula =  Destructions.et.dégradations.volontaires ~1, data = Crime_type)
 
 
-ModelfullDegradations<- lm(formula=  Destructions.et.degradations.volontaires ~ 
-                              Density_2019
-                           +  Povrety_2019 +  No_diploma_rate1k + 
-                              Immig_rate +  Unemp_2019 +
-                              Win_Lepen +
-                              Intensity_povrety)
-
-
-ModelDegradationsNULL <- lm(formula =  Destructions.et.dégradations.volontaires ~1)
-
-
-step(ModelfullDegradations, scope = list(lower= ModelDegradationsNULL, upper=ModelfullDegradations),
+step(Damage_model_full, scope = list(lower= Damage_model_null, upper=Damage_model_full),
      direction = "backward")
 
 #With the AIC we only need to keep the following variables: Poverty, Win Lepen, Density, Intensity Poverty
 
-ModelDegradationsFINAL <-  lm(formula =  Destructions.et.dégradations.volontaires ~ 
-                                 Povrety_2019 +  Win_Lepen
-                              +  Intensity_povrety +  Density_2019)
+Damage_model_final <-  lm(formula =  Destructions.et.dégradations.volontaires ~ 
+                            Povrety_2019 +  
+                            Win_Lepen +
+                            Intensity_povrety +  
+                            Density_2019, data = Crime_type)
 
 
-summary(ModelDegradationsFINAL)
-vif(ModelDegradationsFINAL)
+summary(Damage_model_final)
+vif(Damage_model_final)
 
-#USAGE DE STUPS 
-
-
-ModelFullStups <- lm(formula=  Usage.de.stupéfiants ~ 
-                        Density_2019
-                     +  Povrety_2019 +  No_diploma_rate1k + 
-                        Immig_rate +  Unemp_2019 +
+#USAGE DE STUPS(Drug use)
+Drug_model_full <- lm(formula=  Usage.de.stupéfiants ~ 
+                        Density_2019 +
+                        Povrety_2019 + 
+                        No_diploma_rate1k + 
+                        Immig_rate + 
+                        Unemp_2019 +
                         Win_Lepen +
-                        Intensity_povrety)
+                        Intensity_povrety, data = Crime_type)
 
+Drug_model_null <- lm(formula =  Usage.de.stupéfiants ~ 1, data = Crime_type)
 
-
-
-ModelNULLStups <- lm(formula =  Usage.de.stupéfiants ~ 1)
-
-
-step(ModelFullStups, scope = list(lower= ModelNULLStups, upper=ModelFullStups),
+step(Drug_model_full, scope = list(lower= Drug_model_null, upper = Drug_model_full),
      direction = "backward")
-
 #With AIC test with stepwise regression we choose to compute all the previous variables established
+Drug_model_final <-  Drug_model_full
 
-ModelFINALStups <-  ModelFullStups
+summary(Drug_model_final)
+vif(Drug_model_final)
 
+#Vols(Theft)
 
-summary(ModelFINALStups)
+Theft_model_full <-  lm(formula=  Vols.sans.violence.contre.des.personnes ~ 
+                          Density_2019 +
+                          Povrety_2019 +  
+                          No_diploma_rate1k + 
+                          Immig_rate +  
+                          Unemp_2019 +
+                          Win_Lepen +
+                          Intensity_povrety, data = Crime_type)
 
+Theft_model_null <-  lm(formula =  Vols.sans.violence.contre.des.personnes ~ 1, data = Crime_type)
 
-vif(ModelFINALStups)
-
-#Vols 
-
-ModelFullVols <-  lm(formula=  Vols.sans.violence.contre.des.personnes ~ 
-                        Density_2019
-                     +  Povrety_2019 +  No_diploma_rate1k + 
-                        Immig_rate +  Unemp_2019 +
-                        Win_Lepen +
-                        Intensity_povrety)
-ModelNULLVols <-  lm(formula =  Vols.sans.violence.contre.des.personnes ~ 1)
-
-
-step(ModelFullVols, scope = list(lower= ModelNULLVols, upper=ModelFullVols),
+step(Theft_model_full, scope = list(lower= Theft_model_null, upper=Theft_model_full),
      direction = "backward")
-
 #With AIC test with stepwise regression we chose to keep the following variables for our regression:
 #Immigration, Win Lepen, Density, Unemployment, IntensityPoverty
+Theft_model_final <- lm(formula =  Vols.sans.violence.contre.des.personnes ~ 
+                          Immig_rate + 
+                          Win_Lepen +
+                          Density_2019 + 
+                          Unemp_2019 +
+                          Intensity_povrety, data = Crime_type)
 
-ModelFinalVols <- lm(formula =  Vols.sans.violence.contre.des.personnes ~ 
-                        Immig_rate + Win_Lepen
-                     +  Density_2019 +  Unemp_2019
-                     +  Intensity_povrety)
-
-
-summary(ModelFinalVols)
-vif(ModelFinalVols)
+summary(Theft_model_final)
+vif(Theft_model_final)
 
 
 
