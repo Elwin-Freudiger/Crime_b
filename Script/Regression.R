@@ -3,55 +3,11 @@ library(readxl)
 library(readr)
 library(dplyr)
 library(tidyverse)
-install.packages("caret")
 library(caret)
 library(lmtest)
 library(car)
 library(ggcorrplot)
-
-Everything_by_town_clean <- read_csv(here::here("data_end/Everything_by_town_clean.csv"))
-
-#We first create a model with all the explicative variables  
-Full_model <- lm(formula = Rate_per_1k ~ Density_2019 + 
-                   Win_Lepen + 
-                   Povrety_2019 + 
-                   No_diploma_rate1k + 
-                   Immig_rate + 
-                   Unemp_2019 + 
-                   Intensity_povrety +
-                   Total_pop, 
-                 data = Everything_by_town_clean)
-summary(Full_model)
-#We can observe that not all the variables are significant
-
-vif(Full_model)
-#computing the VIF also tells us that there is currently no strong sign of collinearity
-
-#We then create a Null model to mesure the impact of each variable with a stepwise regression 
-Null_model <- lm(formula = Rate_per_1k ~ 1, data = Everything_by_town_clean)
-
-step(Full_model, scope = list(lower= Null_model, upper=Full_model), direction = "both")
-
-#The model with forward stepwise shows us that the variables to keep are Density, Poverty, Total pop, 
-#immigration rate, unemployment, poverty intensity
-
-#We will now create a reduce model excluding the no diploma variable 
-Reduce_model <- lm(formula = Rate_per_1k ~ Density_2019 + Immig_rate + Unemp_2019 + Total_pop, data = Every)
-summary(Reduce_model)
-
-#We will now compare the previous full modelModelByTown with the reduce one ReduceModel
-
-lrtest(Full_model, Reduce_model)
-#"The model with the higher likelihood ratio will be the best model "
-
-
-Single_model <- lm(Rate_per_1k ~ Intensity_povrety, data = Everything_by_town_clean)
-summary(Single_model)
-
-#compute correlation matrix
-
-corr_matrix <- cor(Everything_by_town_clean[5:14])
-
+library(stargazer)
 
 ############
 ############
@@ -69,7 +25,32 @@ Crime_num <- Crime_type[6:21]
 corr_matrix <- cor(Crime_num)
 #visualize the corrplot
 corplot <- ggcorrplot(corr_matrix)
-corr_matrix
+
+#First run the thing with overall crime
+#We first create a model with all the explicative variables  
+Full_model <- lm(formula = Rate_per_1k ~ Density_2019 + 
+                   Win_Lepen + 
+                   Povrety_2019 + 
+                   No_diploma_rate1k + 
+                   Immig_rate + 
+                   Unemp_2019 + 
+                   Intensity_povrety +
+                   Total_pop, 
+                 data = Crime_type)
+
+
+#computing the VIF also tells us that there is currently no strong sign of collinearity
+
+#We then create a Null model to mesure the impact of each variable with a stepwise regression 
+Null_model <- lm(formula = Rate_per_1k ~ 1, data = Crime_type)
+
+step(Full_model, scope = list(lower= Null_model, upper=Full_model), direction = "backward")
+#The model with forward stepwise shows us that the variables to keep are Density, Poverty, Total pop, 
+#immigration rate, unemployment, poverty intensity
+
+#We will now create a reduce model excluding the no diploma variable 
+Reduce_model <- lm(formula = Rate_per_1k ~ Density_2019 + Immig_rate + Unemp_2019 + Total_pop, data = Crime_type)
+
 
 #Linear regressions with the type of crimes committed + vif 
 
@@ -97,9 +78,6 @@ Assault_model_final <- lm(formula= Coups.et.blessures.volontaires ~
                                  Immig_rate + 
                                  Intensity_povrety, data = Crime_type)
 
-#how do they look ? Print summary, vif and Plot it
-summary(Assault_model_final)
-vif(Assault_model_final)
 
 #Cambriolages(Burglary)
 Burglary_model_full <- lm(formula=  Cambriolages.de.logement ~ 
@@ -124,13 +102,10 @@ Burglary_model_final <-  lm(formula=  Cambriolages.de.logement ~
                               Unemp_2019 +
                               Intensity_povrety, data = Crime_type)
 
-summary(Burglary_model_final)
-vif(Burglary_model_final)
-
 #Destructions et dégradations volontaires(willful destruction and damage)
 
 
-Damage_model_full <- lm(formula=  Destructions.et.degradations.volontaires ~ 
+Damage_model_full <- lm(formula=  Destructions.et.dégradations.volontaires ~ 
                           Density_2019 +
                           Povrety_2019 +  
                           No_diploma_rate1k + 
@@ -155,9 +130,6 @@ Damage_model_final <-  lm(formula =  Destructions.et.dégradations.volontaires ~
                             Density_2019, data = Crime_type)
 
 
-summary(Damage_model_final)
-vif(Damage_model_final)
-
 #USAGE DE STUPS(Drug use)
 Drug_model_full <- lm(formula=  Usage.de.stupéfiants ~ 
                         Density_2019 +
@@ -175,8 +147,7 @@ step(Drug_model_full, scope = list(lower= Drug_model_null, upper = Drug_model_fu
 #With AIC test with stepwise regression we choose to compute all the previous variables established
 Drug_model_final <-  Drug_model_full
 
-summary(Drug_model_final)
-vif(Drug_model_final)
+
 
 #Vols(Theft)
 
@@ -201,15 +172,3 @@ Theft_model_final <- lm(formula =  Vols.sans.violence.contre.des.personnes ~
                           Density_2019 + 
                           Unemp_2019 +
                           Intensity_povrety, data = Crime_type)
-
-summary(Theft_model_final)
-vif(Theft_model_final)
-
-
-
-
-
-
-
-
-

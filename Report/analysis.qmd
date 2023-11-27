@@ -1,13 +1,124 @@
-# Analysis
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, message = FALSE, include = FALSE}
 source(here::here("Script/Regression.R"))
 ```
 
-## Regression
+# Regression
+
+## Correlations
+
+To see how our data may be correlated, we will start by running a correlation analysis.
+
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(corr_matrix, format = "html")
+```
+
+```{r, echo = FALSE, message = FALSE}
+corplot
+```
+
+### Average of all crimes
 
 We will start by running a regression for all crimes combined. 
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Full_model,
+          title = 'Full model with every variable',
+          type = 'html',
+           digits = 3)
+```
+
+VIF analysis
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(t(as.data.frame(vif(Full_model))), format = "html")
+```
 
 
+We find this reduced model.
 
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Reduce_model,
+          title = 'Reduced model after running a stepwise regression',
+          type = 'html',
+           digits = 3)
+```
+
+We then run an LR test to see of our reduced model is better than the full model.
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(lrtest(Full_model, Reduce_model),
+          title = 'Lr test to determine if our new model is better',
+          type = 'html',
+           digits = 3)
+```
+### Assault and Battery
+
+We run the regression with Asssault and Battery as the dependent variable
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Assault_model_final,
+          title = 'Reduced Assault model with stepwise regression',
+          type = 'html',
+           digits = 3)
+```
+
+VIF analysis
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(t(as.data.frame(vif(Assault_model_final))), format = "html")
+```
+
+### Burglaries
+
+We run the regression with Burglaries and find this reduced model
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Burglary_model_final,
+          title = 'Reduced Burglary model with stepwise regression',
+          type = 'html',
+           digits = 3)
+```
+
+VIF analysis
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(t(as.data.frame(vif(Burglary_model_final))), format = "html")
+```
+
+### Wilful damage and destructions
+
+We run the model with Damage and Destruction
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Damage_model_final,
+          title = 'Reduced Damage model with stepwise regression',
+          type = 'html',
+           digits = 3)
+```
+
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(t(as.data.frame(vif(Damage_model_final))), format = "html")
+```
+
+### Drug Use
+
+We run the model with Drug use as our dependent variable
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Drug_model_final,
+          title = 'Reduced Drug use model with stepwise regression',
+          type = 'html',
+           digits = 3)
+```
+
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(t(as.data.frame(vif(Drug_model_final))), format = "html")
+```
+
+
+### Theft without violence
+
+We run the model with Theft as our independent variable
+```{r, echo = FALSE, message = FALSE, results='asis'}
+stargazer(Theft_model_final,
+          title = 'Reduced Theft model with stepwise regression',
+          type = 'html',
+           digits = 3)
+```
+
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(t(as.data.frame(vif(Theft_model_final))), format = "html")
+```
 
