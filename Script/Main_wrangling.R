@@ -13,11 +13,11 @@ library(tidyverse)
 
 
 #Create a list of metropolitan departements
-List_depart <- 
+Pop_by_depart <- 
   read_excel(here::here("Raw_data/population par département.xls"), sheet = "2023")
 
 #List of departments 
-List_depart <- List_depart[5:100, 1:2]
+List_depart <- Pop_by_depart[5:100, 1:2]
 colnames(List_depart) <- c("Dep_number", "Dep_name")
 
 
@@ -44,6 +44,9 @@ Pop_2019 <- Pop_by_year |>
 ####################################################################################
 
 #Now onto crime
+crimes_depart_first <- read_excel(here::here("Raw_data/crimes_depart.xlsx"), sheet = "01") 
+
+
 years_crime <- 1996:2021
 Crime_total <- t(data.frame(years_crime))
 colnames(Crime_total) <- Crime_total[1,]
@@ -79,13 +82,13 @@ Crime_2019 <- Crime_2019 |>
 ####################################################################################
 
 #For unemployment 
-Unemployment <- 
+Unemployment_start <- 
   read.csv(here::here("Raw_data/valeurs_trimestrielles.csv"), 
            sep = ";")
 
 
-dummy <- seq_len(nrow(Unemployment)) %% 2 #Dummy variable equal to 1 if the row is an odd number
-Unemployment <- cbind(dummy, Unemployment)
+dummy <- seq_len(nrow(Unemployment_start)) %% 2 #Dummy variable equal to 1 if the row is an odd number
+Unemployment <- cbind(dummy, Unemployment_start)
 
 Unemployment <- Unemployment |>
   filter(dummy == 1) |>
@@ -473,6 +476,3 @@ Crime_per_type_town <- Crime_type_town |>
          Povrety_2019, Intensity_povrety, No_diploma_rate1k, 
          Immig_rate, Unemp_2019) |>
   na.omit()
-
-write.csv(Crime_per_type_town, "data_end/Crime_per_type_town.csv")
-

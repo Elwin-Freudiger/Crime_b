@@ -1,11 +1,7 @@
 # Data Wrangling
 
 ```{r, echo = FALSE, message = FALSE}
-library(readxl)
-library(readr)
-library(dplyr)
-library(tidyverse)
-#source(here::here("Data_wrangler.R"))
+load(file = here::here("Report/data_wrangling_for_quarto.RData"))
 ```
 
 In this section,we will look at our raw datasets, what information they give us, how we wrangle/clean them to arrive at our final dataset. Lastly we will look at the mistakes in our data and any anomalies or outliers we may find.
@@ -23,10 +19,7 @@ Firstly, we will use a dataset with values by french state. This dataset will no
 There is one excel sheet per year, starting in 1975 and ending in 2023
 
 ```{r, echo = FALSE, message = FALSE}
-List_depart <- 
-  read_excel(here::here("Raw_data/population par département.xls"), sheet = "2023")
-
-knitr::kable(head(List_depart), "html")
+knitr::kable(head(Pop_by_depart), "html")
 ```
 
 This dataset gives us information regarding the population inside the dataset, the population is also divided by gender and age groups. We will only use the total number of people per department. It shoudl be noted that what we call our department number is a Character. This is due to the Corsica departments, split in two in 1975 and named *2A* and *2B*, they used to department number 20.
@@ -39,10 +32,7 @@ There is one excel sheet per department.
 
 ```{r, echo = FALSE, message = FALSE}
 
-  crimes_depart <- read_excel(here::here("Raw_data/crimes_depart.xlsx"), 
-                              sheet = "01") 
-
-knitr::kable(head(crimes_depart), "html")
+knitr::kable(head(crimes_depart_first), "html")
 ```
 
 This dataset is our main one, it tells us for example, that in the department "01" in August 2022, there was 1 case of counterfeit currency. we will be able to calculate the total number of crimes happening each month by department.
@@ -52,11 +42,7 @@ Source: [Crime by state](https://www.data.gouv.fr/fr/datasets/chiffres-departeme
 #### Unemployement
 
 ```{r, echo = FALSE, message = FALSE}
-
-Unemployement <- 
-  read.csv(here::here("Raw_data/valeurs_trimestrielles.csv"), 
-                                     sep = ";")
-knitr::kable(head(Unemployement), "html")
+knitr::kable(head(Unemployment_start), "html")
 ```
 
 Source: [Unemployement by state](https://www.insee.fr/fr/statistiques/series/102760732)
@@ -64,10 +50,6 @@ Source: [Unemployement by state](https://www.insee.fr/fr/statistiques/series/102
 #### Middle school final exam
 
 ```{r, echo = FALSE, message = FALSE}
-
-Middle_results <- read.csv(here::here("Raw_data/fr-en-dnb-par-etablissement.csv"), 
-                                          sep = ";")
-
 knitr::kable(head(Middle_results), "html")
 ```
 
@@ -78,10 +60,6 @@ Source: [Middle school exam results by state](https://www.insee.fr/fr/statistiqu
 #### Election Results
 
 ```{r, echo = FALSE, message = FALSE}
-
-Election_dep <- read_excel(here::here("Raw_data/Election_dep.xls"), 
-                           sheet = "Départements Tour 2", skip = 2)
-
 knitr::kable(head(Election_dep), "html")
 ```
 
@@ -92,10 +70,6 @@ Source: [2017 Election results by state](https://www.data.gouv.fr/fr/datasets/el
 #### Immigration
 
 ```{r, echo = FALSE, message = FALSE}
-
-Immigration_2019 <- read_excel(here::here("Raw_data/Immigration_2019.xlsx"), 
-                               sheet = "Pop0_D")
-
 knitr::kable(head(Immigration_2019), "html")
 ```
 
@@ -106,23 +80,17 @@ Source: [Immigration numbers by departement](https://www.insee.fr/fr/statistique
 #### Population Density
 
 ```{r, echo = FALSE, message = FALSE}
-
-population_2019 <- read_excel(here::here("Raw_data/population_2019.xlsx"), 
-                              sheet = "Figure 3")
-
 knitr::kable(head(population_2019), "html")
 ```
 
 Source: [Population Density by state](https://www.insee.fr/fr/statistiques/6793282?sommaire=6793391#documentation)
+
 
 ### Data by town
 
 #### Crime
 
 ```{r, echo = FALSE, message = FALSE}
-
-Crimes <- read.csv(here::here("Raw_data/try.csv"), sep = ";")
-
 knitr::kable(head(Crimes, n=10), "html")
 ```
 
@@ -135,9 +103,6 @@ Source: [Crime by town](https://www.data.gouv.fr/fr/datasets/bases-statistiques-
 #### Density
 
 ```{r, echo = FALSE, message = FALSE}
-
-Dense <- read_csv(here::here("Raw_data/villes_france.csv"), col_names = FALSE)
-
 knitr::kable(head(Dense), "html")
 ```
 
@@ -148,10 +113,6 @@ Source: [Density by town](https://sql.sh/736-base-donnees-villes-francaises)
 #### Population by town
 
 ```{r, echo=FALSE, message=FALSE}
-
-Pop_2019 <- read_delim(here::here("Raw_data/Pop_2019.csv"), 
-                                delim = ";", escape_double = FALSE, trim_ws = TRUE)
-
 knitr::kable(head(Pop_2019), "html")
 ```
 
@@ -162,11 +123,7 @@ Source: [Density by town](https://www.insee.fr/fr/statistiques/6456157?sommaire=
 #### Population by diploma
 
 ```{r, echo=FALSE, message=FALSE}
-
-Pop_16 <- read_excel(here::here("Raw_data/pop-16ans-dipl6819_v2.xls"), 
-                                    sheet = "Commune_2019")
-
-knitr::kable(head(Pop_16), "html")
+knitr::kable(head(Pop_16_no_diploma), "html")
 ```
 
 In this dataset, column 1 to 6 are the location of the town, with indicators such as the region, the departement and the town number. Then the population is divided by gender and by diploma obtained, we will only focus on the total population over 25 who doesn't have any diploma. The whole excel files gives us this information for every year starting in 1968. We only take the year 2019.
@@ -175,18 +132,8 @@ Source: [Population by diploma by town](https://www.insee.fr/fr/statistiques/189
 
 #### 2017 Election results
 
-```{r, echo=FALSE, message=FALSE}
-
-Election_quarto <- read_excel(here::here("Raw_data/Presidentielle_2017_Resultats_Communes_Tour_2_c.xls"), 
-    col_types = c("text", "text", "text", 
-        "text", "text", "text", "text", "text", 
-        "text", "text", "text", "text", "text", 
-        "text", "text", "text", "text", "text", 
-        "text", "text", "text", "text", "text", 
-        "text", "text", "text", "text", "text", 
-        "text", "text", "text", "text"))
-
-knitr::kable(head(Election_quarto), "html")
+```{r, echo = FALSE, message = FALSE, results = 'asis'}
+knitr::kable(head(Presidentielle_2017), "html")
 ```
 
 This dataset is very similar to the one for departments.
@@ -196,10 +143,6 @@ Source: [2017 Election results by town](https://www.data.gouv.fr/fr/datasets/ele
 #### Poverty by town
 
 ```{r, echo=FALSE, message=FALSE}
-
-Pov_2019 <- read_delim(here::here("Raw_data/FILO2019_DEC_Pauvres_COM.csv"), 
-                                       delim = ";", escape_double = FALSE, trim_ws = TRUE)
-
 knitr::kable(head(Pov_2019), "html")
 ```
 
@@ -210,10 +153,6 @@ Source: [Poverty by town](https://www.insee.fr/fr/statistiques/6036907)
 #### Immigration by town
 
 ```{r, echo=FALSE, message=FALSE}
-
-Immig_by_town <- read_delim("Raw_data/Immig_by_town.csv", 
-                            delim = ";", escape_double = FALSE, trim_ws = TRUE)
-
 knitr::kable(head(Immig_by_town), "html")
 ```
 
@@ -231,8 +170,6 @@ We create a list of states with their numbers using the population dataset.
 ```{r, eval=FALSE}
 List_depart <- List_depart[5:100, 1:2]
 colnames(List_depart) <- c("Dep_number", "Dep_name")
-
-knitr::kable(head(List_departe, n=3), "html")
 ```
 
 To do this, we select our states and only the name and state code from our Population dataset. For reasons stated above, we only select metropolitan states. This means only selecting the first 96 states. We then rename our columns with easy to remember names that will be used as our key in the future.

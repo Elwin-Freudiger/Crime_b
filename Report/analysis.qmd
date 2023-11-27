@@ -121,4 +121,3 @@ stargazer(Theft_model_final,
 ```{r, echo = FALSE, message = FALSE}
 knitr::kable(t(as.data.frame(vif(Theft_model_final))), format = "html")
 ```
-
