@@ -132,6 +132,14 @@ immig_map
 
 Lastly, this map shows us th immigration rate, be department. As we can see, Immigrants are mostly located in the vicinity of the Paris region. Other notable areas of higher immigration are border regions in the south and in the east. 
 
+#### Interactive Maps
+
+```{r, message=FALSE, echo=FALSE}
+leaf_map
+```
+
+We create a map using leaflet to see how we can 
+
 ## Clustering 
 
 We will now run a cluster analysis of each department, we want to see if some departments have simmilarities.

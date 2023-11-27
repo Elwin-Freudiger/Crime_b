@@ -9,9 +9,7 @@ library(gganimate)
 library(gifski)
 library(sf)
 library(ggspatial)
-install.packages("leaflet")
 library(leaflet)
-install.packages("leaflet.extras")
 library(leaflet.extras)
 
 #Plot the crime rate in 2019 of the most criminal states and least criminal states.
@@ -135,12 +133,15 @@ Bars <- ggplot(Unemp_2019, aes(x = reorder(Departement, Rate), y = Rate, fill = 
 Bars <- ggplotly(Bars)
 
 
-#Unemp map
+#Create a dataframe whith a geometry column
+
 border <- st_read(here::here("data_end/Departement_geoson_carte.geojson"))
 colnames(border) <- c("Dep_number", "Dep_name", "geometry")
 Everything_by_dep <- read_csv(here::here("data_end/Everything_by_dep.csv"))
 both <- left_join(border, Everything_by_dep, join_by("Dep_number"))
 
+
+#Unemp map
 plot_map <- ggplot() +
   geom_sf(data = both, aes(fill = Unemp_2019)) + 
   scale_fill_gradient(low = "green", high = "red")+
@@ -190,8 +191,6 @@ immig_map <- ggplot() +
         panel.grid = element_blank()) +
   labs(title = "Immigration rate")
 
-immig_map
-
 #Map school pass rates
 school_map <- ggplot() +
   geom_sf(data = both, aes(fill = Pass_rate)) + 
@@ -213,22 +212,71 @@ colnames(Town_border) <- c("Town_code", "Town_name", "geometry")
 Everything_by_town <- read_csv(here::here("data_end/Everything_by_town.csv"))
 both_town <- left_join(Town_border, Everything_by_town, join_by("Town_code"))
 
-summary(both_town)
-
 #plot the map with leaflet
 
 
 #By department
-pal <- colorNumeric("Blues", NULL)
+#We first divide the values in 10 deciles. This means that our data is divided into 10% of the data ordered
+break_crime <- quantile(both$Crime_rate_1k, probs = seq(0, 1, 0.1))
+break_unemp <- quantile(both$Unemp_2019, probs = seq(0, 1, 0.1))
+break_school <- quantile(both$Pass_rate, probs = seq(0, 1, 0.1))
+break_Lepen <- quantile(both$Lepen_score, probs = seq(0, 1, 0.1))
+break_immig <- quantile(both$Immig_rate, probs = seq(0, 1, 0.1))
+break_density <- quantile(both$Density_2019, probs = seq(0, 1, 0.1))
 
-leaflet(both) %>%
+#We create a categorical variable, for every value.
+Categorical_data <- both |>
+  select(-Dep_name.x) |>
+  rename(Dep_name = Dep_name.y) |>
+  mutate(category_crime = cut(Crime_rate_1k, breaks = break_crime, labels = FALSE, include.lowest = TRUE),
+         category_unemp = cut(Unemp_2019, breaks = break_unemp, labels = FALSE, include.lowest = TRUE),
+         category_school = cut(Pass_rate, breaks = break_school, labels = FALSE, include.lowest = TRUE),
+         category_lepen = cut(Lepen_score, breaks = break_Lepen, labels = FALSE, include.lowest = TRUE),
+         category_immig = cut(Immig_rate, breaks = break_immig, labels = FALSE, include.lowest = TRUE),  
+         category_density = cut(Density_2019, breaks = break_density, labels = FALSE, include.lowest = TRUE),
+         )
+
+#the color palette, we use viridis here
+pal <- colorNumeric("Reds", NULL)
+
+leaf_map <- leaflet(Categorical_data) %>%
   addTiles() %>%
-  addPolygons(stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal(Lepen_score),
+  addPolygons(group = "Unemployment", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal(category_unemp),
               color = "white",
-              weight = 0.2,
-              label = ~paste0(Dep_name.x, ": ", Lepen_score)) %>%
-  addLegend(position = "bottomright", pal = pal, values = ~Lepen_score,
-            title = "Lepen Score", opacity = 1)
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Unemp_2019)) %>% 
+  addPolygons(group = "School rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal(category_school),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Pass_rate)) %>% 
+  addPolygons(group = "Lepen Score", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(category_lepen),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Lepen_score)) %>% 
+  addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal(category_immig),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Immig_rate)) %>% 
+  addPolygons(group = "Density", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal(category_density),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Density_2019)) %>% 
+  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 1,
+              fillColor = ~pal(Crime_rate_1k),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Crime_rate_1k)) %>% 
+  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School rate", "Lepen score", "Immigration", "Density"),
+                   options = layersControlOptions(collapsed = FALSE))
+leaf_map
 
-
+map_leaflet <- leaflet(Categorical_data) %>%
+  addTiles() %>%
+  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.5,
+              fillColor = ~pal(category_crime), color = "white", weight = 0.3, 
+              label = ~paste0(Dep_name, ": ", Crime_rate_1k)) |>
