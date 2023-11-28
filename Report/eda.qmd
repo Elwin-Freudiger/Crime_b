@@ -135,10 +135,16 @@ Lastly, this map shows us th immigration rate, be department. As we can see, Imm
 #### Interactive Maps
 
 ```{r, message=FALSE, echo=FALSE}
-leaf_map
+leaf_cap_map
 ```
 
-We create a map using leaflet to see how we can 
+We create a map using leaflet. Here it should be noted that for clarity reasons, the values of Immigration, Density and Crime rate have all been capped. This is because the parisian region is an outlier for these variables. As such, the true value of the crime rate is not accuratly represented for these variables. This is a tradeoff between showing the differences of between french departments and representing the Paris region criminality.
+
+```{r, message=FALSE, echo=FALSE}
+circle_map
+```
+
+In the above map, one can see the crime rate for many towns in France. To display them, simply click on the desired department. This was done to avoid confusing overlap, especially in the Paris region. It shoudl be noted that not all towns are represented here. 
 
 ## Clustering 
 

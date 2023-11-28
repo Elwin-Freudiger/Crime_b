@@ -205,39 +205,45 @@ school_map <- ggplot() +
 
 
 
-#Now we will create a leaflet map at the Town level.
-
-Town_border <- st_read(here::here("Raw_data/TownGEO.geojson"))
-colnames(Town_border) <- c("Town_code", "Town_name", "geometry")
-Everything_by_town <- read_csv(here::here("data_end/Everything_by_town.csv"))
-both_town <- left_join(Town_border, Everything_by_town, join_by("Town_code"))
 
 #plot the map with leaflet
 
 
 #By department
 #We first divide the values in 10 deciles. This means that our data is divided into 10% of the data ordered
-break_crime <- quantile(both$Crime_rate_1k, probs = seq(0, 1, 0.1))
-break_unemp <- quantile(both$Unemp_2019, probs = seq(0, 1, 0.1))
-break_school <- quantile(both$Pass_rate, probs = seq(0, 1, 0.1))
-break_Lepen <- quantile(both$Lepen_score, probs = seq(0, 1, 0.1))
-break_immig <- quantile(both$Immig_rate, probs = seq(0, 1, 0.1))
-break_density <- quantile(both$Density_2019, probs = seq(0, 1, 0.1))
+both_category <- both |> select(Dep_number, Dep_name.x, Unemp_2019, 
+                                Crime_rate_1k, Pass_rate, Lepen_score, 
+                                Immig_rate, Density_2019, geometry) |>
+  rename(Dep_name = Dep_name.x)
 
-#We create a categorical variable, for every value.
-Categorical_data <- both |>
-  select(-Dep_name.x) |>
-  rename(Dep_name = Dep_name.y) |>
-  mutate(category_crime = cut(Crime_rate_1k, breaks = break_crime, labels = FALSE, include.lowest = TRUE),
-         category_unemp = cut(Unemp_2019, breaks = break_unemp, labels = FALSE, include.lowest = TRUE),
-         category_school = cut(Pass_rate, breaks = break_school, labels = FALSE, include.lowest = TRUE),
-         category_lepen = cut(Lepen_score, breaks = break_Lepen, labels = FALSE, include.lowest = TRUE),
-         category_immig = cut(Immig_rate, breaks = break_immig, labels = FALSE, include.lowest = TRUE),  
-         category_density = cut(Density_2019, breaks = break_density, labels = FALSE, include.lowest = TRUE),
+#Bin the data into 10 intervals of same value
+Categorical_data <- both_category |>
+  mutate(category_unemp = cut(Crime_rate_1k, 
+                              breaks = seq(min(both_category$Crime_rate_1k), max(both_category$Crime_rate_1k), 
+                                           (max(both_category$Crime_rate_1k) - min(both_category$Crime_rate_1k))/10), 
+                              labels = seq(1, 10, 1), include.lowest = TRUE),
+         category_crime = cut(Unemp_2019, 
+                              breaks = seq(min(both_category$Unemp_2019), max(both_category$Unemp_2019), 
+                                            (max(both_category$Unemp_2019) - min(both_category$Unemp_2019))/10), 
+                              labels = seq(1, 10, 1), include.lowest = TRUE),
+         category_school = cut(Pass_rate,
+                               breaks = seq(min(both_category$Pass_rate), max(both_category$Pass_rate), 
+                                            (max(both_category$Pass_rate) - min(both_category$Pass_rate))/10), 
+                               labels = seq(10, 1, -1), include.lowest = TRUE),
+         category_lepen = cut(Lepen_score, 
+                              breaks = seq(min(both_category$Lepen_score), max(both_category$Lepen_score), 
+                                                        (max(both_category$Lepen_score) - min(both_category$Lepen_score))/10),
+                              labels = seq(1, 10, 1), include.lowest = TRUE),
+         category_immig = cut(Immig_rate, 
+                              breaks =  seq(min(both_category$Immig_rate), max(both_category$Immig_rate), 
+                                                        (max(both_category$Immig_rate) - min(both_category$Immig_rate))/10),
+                              labels = seq(1, 10, 1), include.lowest = TRUE),  
+         category_density = cut(Density_2019, 
+                              breaks = seq(min(both_category$Density_2019), max(both_category$Density_2019), 
+                                                           (max(both_category$Density_2019) - min(both_category$Density_2019))/10),
+                              labels = seq(1, 10, 1), include.lowest = TRUE)
          )
-
-#the color palette, we use viridis here
-pal <- colorNumeric("Reds", NULL)
+pal <- colorFactor("RdYlGn", NULL)
 
 leaf_map <- leaflet(Categorical_data) %>%
   addTiles() %>%
@@ -275,8 +281,112 @@ leaf_map <- leaflet(Categorical_data) %>%
                    options = layersControlOptions(collapsed = FALSE))
 leaf_map
 
-map_leaflet <- leaflet(Categorical_data) %>%
+#Last ditch attempt, try to cap the values that are too high
+capped_both <- both |>
+  mutate(Cap_crime = ifelse(Crime_rate_1k > 75, 75, Crime_rate_1k),
+         Cap_immig = ifelse(Immig_rate > 0.15, 0.15, Immig_rate),
+         Cap_density = ifelse(Density_2019 > 750, 750, Density_2019)) |>
+  select(-Dep_name.x) |>
+  rename(Dep_name = Dep_name.y)
+
+
+pal_cap <- colorFactor("viridis", NULL)
+
+leaf_cap_map <- leaflet(capped_both) %>%
   addTiles() %>%
-  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.5,
-              fillColor = ~pal(category_crime), color = "white", weight = 0.3, 
-              label = ~paste0(Dep_name, ": ", Crime_rate_1k)) |>
+  addPolygons(group = "Unemployment", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal_cap(Unemp_2019),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Unemp_2019)) %>% 
+  addPolygons(group = "School rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal_cap(Pass_rate),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Pass_rate)) %>% 
+  addPolygons(group = "Lepen Score", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal_cap(Lepen_score),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Lepen_score)) %>% 
+  addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal_cap(Cap_immig),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Immig_rate)) %>% 
+  addPolygons(group = "Density", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal_cap(Cap_density),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Density_2019)) %>% 
+  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
+              fillColor = ~pal_cap(Cap_crime),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Crime_rate_1k)) %>% 
+  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School rate", "Lepen score", "Immigration", "Density"),
+                   options = layersControlOptions(collapsed = FALSE))
+
+
+#Now we will create a leaflet map at the Town level.
+
+#We load a dataset that gives us the center of a town
+Everything_by_town <- read_csv(here::here("data_end/Everything_by_town.csv"))
+Cities <- read_csv("Raw_data/villes_france.csv", col_names = FALSE)
+City_center <- Cities |> select(c(11, 21, 20)) |>
+  rename(Town_code = `X11`, 
+         Latitude = `X21`,
+         Longitude = `X20`)
+both_town_center <- left_join(City_center, Everything_by_town, join_by("Town_code")) |>
+  na.omit() |>
+  filter(!grepl("^97", Town_code))
+
+circle_map <- leaflet() %>%
+  addTiles()
+
+#list of department number and names
+grouped <- unique(both_town_center$Dep_name)
+list <- unique(both_town_center$Dep_number)
+#add circles for departments using a for loop. and create a group by department
+for (i in 1:length(grouped)) {
+  # Filter data for the  department needed
+  data <- filter(both_town_center, Dep_number == list[i])
+  
+  # Add circles for the  department
+  circle_map <- circle_map %>%
+    addCircles(
+      group = as.character(grouped[i]),
+      data = data,
+      lng = ~Longitude,
+      lat = ~Latitude,
+      weight = 1,
+      fillColor = "red",
+      stroke = TRUE,
+      color = "red",
+      fillOpacity = 0.2,
+      radius = ~Rate_per_1k * 300 #chose the circles radius
+    )
+}
+
+# Layer control to have the opportunity to show each layer/department
+circle_map <- circle_map %>%
+  addLayersControl(
+    overlayGroups = as.character(grouped),  # Convert department numbers to character
+    options = layersControlOptions(collapsed = FALSE)
+  ) |> hideGroup(grouped) |> #start with every layer hidden by default
+
+
+
+
+
+  addTiles() |>
+  addCircles(
+    ~Longitude, ~Latitude,
+    weight = 1,
+    fillColor = "red",
+    stroke = TRUE,
+    color = "red",
+    fillOpacity = 0.2,
+    radius = ~(Rate_per_1k*500),
+    popup = ~paste("Crime rate:", Density_2019)
+    )
