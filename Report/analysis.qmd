@@ -20,26 +20,33 @@ corplot
 ### Average of all crimes
 
 We will start by running a regression for all crimes combined. 
-```{r, echo = FALSE, message = FALSE, results='asis'}
-stargazer(Full_model,
-          title = 'Full model with every variable',
-          type = 'html',
-           digits = 3)
+```{r, eval=FALSE}
+Full_model <- lm(formula = Rate_per_1k ~ Density_2019 + Win_Lepen + 
+                   Povrety_2019 + No_diploma_rate1k + Immig_rate + 
+                   Unemp_2019 + Intensity_povrety + Total_pop, data = Crime_type)
 ```
 
-VIF analysis
+First is our VIF analysis of the model.
 ```{r, echo = FALSE, message = FALSE}
 knitr::kable(t(as.data.frame(vif(Full_model))), format = "html")
 ```
 
+We then run a stepwise regression backwards to see what variables are not useful
 
-We find this reduced model.
+```{r, results='asis'}
+step(Assault_model_full, scope = list(lower= Assault_model_null, upper=Assault_model_full),
+     direction = "backward")
+```
+
+We find this reduced model. compared to our full model
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
-stargazer(Reduce_model,
-          title = 'Reduced model after running a stepwise regression',
+stargazer(Full_model, Reduce_model, 
+          title = 'Comparison of the full model and our reduced model',
           type = 'html',
-           digits = 3)
+           digits = 3, 
+          align = TRUE,
+          column.labels =c("Full model", "Reduced model"))
 ```
 
 We then run an LR test to see of our reduced model is better than the full model.
