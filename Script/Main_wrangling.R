@@ -475,4 +475,20 @@ Crime_per_type_town <- Crime_type_town |>
          Density_2019, Lepen, Win_Lepen, 
          Povrety_2019, Intensity_povrety, No_diploma_rate1k, 
          Immig_rate, Unemp_2019) |>
-  na.omit()
+  na.omit() |>
+  rename(Assault = `Coups et blessures volontaires`,
+         Burglary = `Cambriolages de logement`,
+         Damage = `Destructions et dégradations volontaires`,
+         Drugs = `Usage de stupéfiants`,
+         Theft = `Vols sans violence contre des personnes`,
+         Dep_number = Dep_number.x
+         ) |>
+  select(-Year) |>
+  mutate(Lepen= Lepen/100,
+         Povrety_2019 = Povrety_2019/100,
+         No_diploma_rate1k = No_diploma_rate1k/1000,
+         Immig_rate = Immig_rate/1000,
+         Unemp_2019 = Unemp_2019/100)
+
+#We put everything on a percent basis
+
