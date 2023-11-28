@@ -248,37 +248,6 @@ Crime_2019 <- Crime_2019 |>
 
 We then only select the year 2019 and compute the crime rate per thousand people. To do this we must add pur previously created population in 2019 dataframe.
 
-```{r eval = FALSE}
-#Create a dataset where we look at the rate for each type of crime
-Crime_type_town <- Type_per_year |>
-  filter(Year == 19) |>
-  rename(Town_code = Town, Dep_number = Departement) |>
-  select(Dep_number, Town_code, Type, Rate_per_1k) |>
-  pivot_wider(names_from = Type, values_from = Rate_per_1k) |>
-  select(Dep_number, Town_code, "Cambriolages de logement", 
-         "Coups et blessures volontaires", 
-         "Destructions et dégradations volontaires", 
-         "Usage de stupéfiants",
-         "Vols sans violence contre des personnes")
-
-Crime_type_town[is.na(Crime_type_town)] <- 0
-
-Crime_per_type_town <- Crime_type_town |>
-  full_join(Everything_by_town_clean, join_by(Town_code)) |>
-  select(Dep_number.x, Town_code, Town_name, 
-         Total_pop, Total_crime, Rate_per_1k, 
-         "Cambriolages de logement", "Coups et blessures volontaires", "Destructions et dégradations volontaires", 
-         "Usage de stupéfiants", "Vols sans violence contre des personnes",
-         Density_2019, Lepen, Win_Lepen, 
-         Povrety_2019, Intensity_povrety, No_diploma_rate1k, 
-         Immig_rate, Unemp_2019) |>
-  na.omit()
-```
-
-We also create a dataset where we keep the type of crime commited. To do this, we simply do a pivot_wider() and select our criminality. Since some cities do not have every type of crime present, we are left with a substantial amount of NA values. We decide to replace our NA's with zeroes since an NA value indicates that there was less than 5 instances of a crime. 
-
-Finally, we join it with our joined database.
-
 #### Unemployment
 
 This dataset is a bit trickier.
@@ -449,6 +418,25 @@ Crime_2019_town <- Type_per_year |>
 
 We then summarize the rate value by town to use in our regression
 
+```{r eval = FALSE}
+#Create a dataset where we look at the rate for each type of crime
+Crime_type_town <- Type_per_year |>
+  filter(Year == 19) |>
+  rename(Town_code = Town, Dep_number = Departement) |>
+  select(Dep_number, Town_code, Type, Rate_per_1k) |>
+  pivot_wider(names_from = Type, values_from = Rate_per_1k) |>
+  select(Dep_number, Town_code, "Cambriolages de logement", 
+         "Coups et blessures volontaires", 
+         "Destructions et dégradations volontaires", 
+         "Usage de stupéfiants",
+         "Vols sans violence contre des personnes")
+
+Crime_type_town[is.na(Crime_type_town)] <- 0
+```
+
+We also create a dataset where we keep the type of crime commited. To do this, we simply do a pivot_wider() and select our types of crime. In this instance we only focus on the 5 most commited crimes.
+Since some cities do not have every type of crime present, we are left with a substantial amount of NA values. We decide to replace our NA's with zeroes since an NA value indicates that there was less than 5 instances of a crime. 
+
 #### Density
 
 ```{r, eval=FALSE}
@@ -618,6 +606,34 @@ Everything_by_town_clean <- Everything_by_town |>
 ```
 
 then, we omit our missing values, select only our very important values and we have our final dataset. that we may use for EDA and most importantly for our Regression analysis. Were we will predict the crime rate of a town using our independent variables.
+
+We then create a dataset for each type of crime per town.
+
+```{r, eval=FALSE}
+Crime_per_type_town <- Crime_type_town |>
+  full_join(Everything_by_town_clean, join_by(Town_code)) |>
+  select(Dep_number.x, Town_code, Town_name, 
+         Total_pop, Total_crime, Rate_per_1k, 
+         "Cambriolages de logement", "Coups et blessures volontaires", "Destructions et dégradations volontaires", 
+         "Usage de stupéfiants", "Vols sans violence contre des personnes",
+         Density_2019, Lepen, Win_Lepen, 
+         Povrety_2019, Intensity_povrety, No_diploma_rate1k, 
+         Immig_rate, Unemp_2019) |>
+  na.omit() |>
+  rename(Assault = `Coups et blessures volontaires`,
+         Burglary = `Cambriolages de logement`,
+         Damage = `Destructions et dégradations volontaires`,
+         Drugs = `Usage de stupéfiants`,
+         Theft = `Vols sans violence contre des personnes`,
+         Dep_number = Dep_number.x
+         ) |>
+  select(-Year) |>
+  mutate(Lepen= Lepen/100,
+         Povrety_2019 = Povrety_2019/100,
+         No_diploma_rate1k = No_diploma_rate1k/1000,
+         Immig_rate = Immig_rate/1000,
+         Unemp_2019 = Unemp_2019/100)
+```
 
 ## Final results
 
