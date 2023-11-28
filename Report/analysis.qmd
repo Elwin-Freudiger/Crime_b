@@ -40,7 +40,7 @@ Subsequently, we conducted a stepwise regression AIC test to identify indispensa
 The initial regression includes the average of all crimes and potential explanatory variables.
 With a formula as seen below:
 
-$$ RatePer1k = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3Poverty + \beta_4NoDiplomaRate + \beta_5ImmigrationRate + \beta_5UnemploymentRate + \beta_6IntensityPoverty + \beta_6 Total Pop $$
+$$ RatePer1k = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3Poverty + \beta_4NoDiplomaRate + \\ \beta_5ImmigrationRate + \beta_5UnemploymentRate + \beta_6IntensityPoverty + \beta_6 Total Pop $$
 
 Subsequently, we conducted a stepwise regression AIC test to identify indispensable variables, leading to the removal of Win_Lepen, Intensity Poverty, Poverty, and No Diploma Rate.
 
@@ -95,7 +95,7 @@ In the Assault and Battery regression, Density, Poverty, No_Diploma_Rate, and In
 The VIF test confirmed the absence of multicollinearity, and the Adjusted R-Squared improved to around 0.37.
 
 Our final formula is the following:
-$$ AssaultandBattery = \beta_0 + \beta_1 Density +  \beta_2Poverty + \beta_3NoDiplomaRate + \beta_4ImmigrationRate + \beta_5IntensityPoverty $$
+$$ AssaultandBattery = \beta_0 + \beta_1 Density +  \beta_2Poverty + \beta_3NoDiplomaRate + \\ \beta_4ImmigrationRate + \beta_5IntensityPoverty $$
 ### Burglaries
 
 We run the regression with Burglaries and find this reduced model
@@ -118,7 +118,7 @@ Notably, Poverty and No_Diploma_Rate negatively affected predictions (-19.624/-1
 The VIF test assured us of no multicollinearity issues, though the Adjusted R-Squared was approximately 0.19.
 
 Our final formula is the following: 
-$$ Burglary = \beta_0 + \beta_1Poverty + \beta_2NoDiplomaRate + \beta_3ImmigrationRate + \beta_4UnemploymentRate + \beta_5IntensityPoverty $$
+$$ Burglary = \beta_0 + \beta_1Poverty + \beta_2NoDiplomaRate + \beta_3ImmigrationRate + \\ \beta_4UnemploymentRate + \beta_5IntensityPoverty $$
 
 ### Intentional damage and destructions
 
@@ -166,7 +166,7 @@ Poverty and Immigration Rate had the most significant positive impacts (7.769/6.
 The VIF test indicated no multicollinearity issues.
 
 Our final formula is the following:
-$$ DrugUse = \beta_0 + \beta_1 Density + \beta_2Poverty + \beta_3NoDiplomaRate + \beta_4ImmigrationRate + \beta_5UnemploymentRate + \beta_6WinLepen + \beta_7IntensityPoverty $$
+$$ DrugUse = \beta_0 + \beta_1 Density + \beta_2Poverty + \beta_3NoDiplomaRate + \beta_4ImmigrationRate + \\ \beta_5UnemploymentRate + \beta_6WinLepen + \beta_7IntensityPoverty $$
 
 ### Theft without violence
 
@@ -190,7 +190,7 @@ The positive impact of Immigration_Rate was substantial (\~20), but the low Adju
 Nevertheless, the VIF test confirmed no multicollinearity issues in this regression."
 
 Our final formula is the following:
-$$ Theft = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3ImmigrationRate + \beta_4UnemploymentRate + \beta_5IntensityPoverty $$
+$$ Theft = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3ImmigrationRate + \\ \beta_4UnemploymentRate + \beta_5IntensityPoverty $$
 
 ## Discussing our results
 

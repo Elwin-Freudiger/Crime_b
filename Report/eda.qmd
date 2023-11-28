@@ -98,14 +98,17 @@ In the last decade the unemployment rate has been mastered once again until the 
 
 ```{r, message=FALSE, echo=FALSE}
 Bars
-plot_map
 ```
 
 We can observe with this graph that there's an important disparity in unemployment rates in France.
 It's also relevant that one of the departments with the higher crime rate which we've seen before, is also one of the departments with the higher crime rates (93).
 This may be an indication of what we could possibly find with the statistical regressions.
 
-### Maps
+## Mapping
+```{r, message=FALSE, echo=FALSE}
+plot_map
+```
+This map computes the unemployment percentage in every department
 
 ```{r, message=FALSE, echo=FALSE}
 crime_map
@@ -132,8 +135,6 @@ immig_map
 
 Lastly, this map shows us th immigration rate, be department. As we can see, Immigrants are mostly located in the vicinity of the Paris region. Other notable areas of higher immigration are border regions in the south and in the east. 
 
-#### Interactive Maps
-
 ```{r, message=FALSE, echo=FALSE}
 leaf_cap_map
 ```
@@ -152,7 +153,7 @@ We will now run a cluster analysis of each department, we want to see if some de
 
 First, we compute the correlation matrix.
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
  d <- data.frame(cor(Data_to_cluster))
 knitr::kable(d, "html")
 ```
@@ -164,7 +165,7 @@ We now compute the distance matrix. Using this distance matrix, we run a hierarc
 
 we get the following dendrogram. 
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
 plot(Dep_completelink)
 ```
 
@@ -172,13 +173,13 @@ This graph tells us that observation 76 stands out from the rest, Observation 76
 Based on this graph we could try to use 3 clusters. 
 
 We can now visualize this using our 2 most correlated variables, Crime rates and Density.
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
 plot_cluster
 ```
 
 This is quite interesting, our 3 clusters are Paris, the Paris region and the rest of France. 
 To further show this, we can see this in a map format.
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
 cluster_map
 ```
 
@@ -187,19 +188,19 @@ To further our analysis and chose a number of clusters, we will run  K-means ana
 This approach is what is recommended, we will run the same clustering 25 times with different centers as we initialize. Running it 25 times will ensure that we get the best clusters we can. 
 
 We get the followig scree plot from our analysis:
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
 scree_plot
 ```
 as we can tell, our optimal number of clusters seems to be 6 clusters.
 
 We'll visualize this using a cluster plot and a facet wrap of Lepen Scores and Unemployment rate, we previously say that the correlation was decently high.
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
 cluster_plot
 cluster_plot + facet_wrap(~clust_number, nrow = 2) 
 ```
 
 As before, we will map it for more clarity.
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, results='asis'}
 cluster_map_means
 ```
 

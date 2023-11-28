@@ -14,8 +14,7 @@ consistently ranks as one of the most important priority for the French
 population. In our study, we wanted to focus on the social and economic
 factors contributing to this issue. France is often regarded as one of
 the major world powers, and yet, it is clear that similarly to the rest
-of the world, the french population is feeling more and more insecure
-regarding crime. Crime is impacting the political landscape very much.
+of the world, there are increasing safety concerns regarding crime. Crime is impacting the political landscape very much.
 This subject has also made it's way into everyday discussions as it
 proves to be a polarizing topic. In the last thirty years, Politicians
 have often promised to tackle crime through several means, and as the
@@ -25,8 +24,7 @@ made it one of their top priority.
 In recent times, there has been a noticeable rise in criminal activities
 across France. Regions such as "Seine Saint Denis" in the Paris area.
 has seen emboldened criminals committing crimes in broad daylight,
-contributing to a perception of increased chaos and increasing the
-feeling of insecurity. Similar concerns have surfaced in cities like
+contributing to a perception of increased chaos. Similar concerns have surfaced in cities like
 Marseille. Additionally, it's worth noting that the prison population
 has reached an all-time high in July 2023. But what are the reasons for
 increased criminality?
@@ -44,9 +42,9 @@ conditions of leaving, and school level. Our project explores the link
 between socio-economic factors and criminality rates. Establishing such
 a link would give a new outlook on crime and its causes. Additionally we
 would like to know whether, this data could be used by the government to
-address public safety. Moreover, what are the core human drivers that
-push humans to commit crimes? How their socio-economic environment and
-their educational path may impact their ability to commit crimes?
+address public safety. 
+In this project we will get answers regarding the core human drivers that push humans to commit crimes and
+how their socio-economic environment or educational path may impact their ability to commit crime.
 
 ## Associated papers
 

@@ -6,25 +6,13 @@ format:
   html:
     code-fold: TRUE
     toc: TRUE
-    embed-resources: true
-    number-sections: true
+    toc-expand: TRUE
+    toc-location: left
+    embed-resources: TRUE
+    number-sections: TRUE
 
 ---
 
 ```{r child = c("intro.qmd", "data.qmd", "eda.qmd", "analysis.qmd")}
 ```
-
-
-
-## X. RoadMap
-What is left to do for our report?
-
-As things stand, we still need to run our regression and analyse its results.
-We also need to answer our research questions. 
-
-If possible we would also like to run a PCA analysis on the different types of crimes to see if certain states experience a type of crime more often than others, and if some crimes can be related. 
-
-We would also like to tweak various parts of our report, for example, we still need to add more graphs and at least one interactive map using the leaflet package. 
-
-We would also like to develop our EDA section by adding more information on our raw databases, with information regarding the missing values or the distribution of values.
 
