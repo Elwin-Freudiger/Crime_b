@@ -7,9 +7,9 @@ editor:
 # Visualization
 
 ```{r, echo = FALSE, message = FALSE, include=FALSE}
-#graph source
-source(here::here("Script/Plotting.R"))
-source(here::here("Script/Clustering.R"))
+load(file = here::here("Report/Data_for_EDA.RData"))
+#source(here::here("Script/Plotting.R"))
+#source(here::here("Script/Clustering.R"))
 ```
 
 ## Crime
@@ -57,12 +57,14 @@ The effect of the COVID-19 pandemic can also be observed as most crimes have see
 For example, theft without violence saw a sharp drop and its levels have not gone back to 2019 levels of theft.
 
 The Types of crime committed also depend on the location.
-
+::: {#fig-elephants layout-ncol=2}
 ```{r, echo=FALSE, message=FALSE}
 plot75
+```
+```{r, echo=FALSE, message=FALSE}
 plot18
 ```
-
+:::
 In these graphs, we can see the difference in the types of crime committed in the Paris department and in the Cher department.
 Cher is sparsely populated department.
 Here we observe that in Paris, theft without violence is the number one committed crime.
@@ -154,8 +156,7 @@ We will now run a cluster analysis of each department, we want to see if some de
 First, we compute the correlation matrix.
 
 ```{r, message=FALSE, echo=FALSE, results='asis'}
- d <- data.frame(cor(Data_to_cluster))
-knitr::kable(d, "html")
+knitr::kable(dMatrix, "html")
 ```
 
 As we can see, Density is highly correlated with Crime Rates. In contrast, Density and unemployment have a very low correlation. Other interesting Correlations are the one with Immigration and Crime rates, Unemployment and the Score of Marine Lepen.
@@ -166,7 +167,7 @@ We now compute the distance matrix. Using this distance matrix, we run a hierarc
 we get the following dendrogram. 
 
 ```{r, message=FALSE, echo=FALSE, results='asis'}
-plot(Dep_completelink)
+plot_completeLink
 ```
 
 This graph tells us that observation 76 stands out from the rest, Observation 76 is actually Paris. Paris is a clear outlier. 
@@ -196,7 +197,7 @@ as we can tell, our optimal number of clusters seems to be 6 clusters.
 We'll visualize this using a cluster plot and a facet wrap of Lepen Scores and Unemployment rate, we previously say that the correlation was decently high.
 ```{r, message=FALSE, echo=FALSE, results='asis'}
 cluster_plot
-cluster_plot + facet_wrap(~clust_number, nrow = 2) 
+cluster_facet
 ```
 
 As before, we will map it for more clarity.
@@ -205,13 +206,3 @@ cluster_map_means
 ```
 
 Overall, during this clustering exercise, our main learning is that Paris and it's suburbs are very big compared to the rest of France, so much that it tends skew the analysis. For our final report, it could be interesting to remove Paris and the prarisian region to be able to conduct an analysis of the rest of our departments
-
-
-
-
-
-
-
-
-
-

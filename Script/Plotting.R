@@ -279,7 +279,6 @@ leaf_map <- leaflet(Categorical_data) %>%
               label = ~paste0(Dep_name, ": ", Crime_rate_1k)) %>% 
   addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School rate", "Lepen score", "Immigration", "Density"),
                    options = layersControlOptions(collapsed = FALSE))
-leaf_map
 
 #Last ditch attempt, try to cap the values that are too high
 capped_both <- both |>

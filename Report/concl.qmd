@@ -1,9 +1,15 @@
-# Conclusion
+# Conclusion and limits
 
-```{r, echo = FALSE, message = FALSE}
-source(here::here("scripts/setup.R"))
-```
+This project aimed to predict criminality in various aspects across France using several explanatory variables. However, significant limitations exist. 
 
-* Take home message
-* Limitations
-* Future work?
+Firstly, France exhibits substantial disparities between its departments and cities concerning crime rates, education levels, unemployment, and immigration. Interpreting these results at a national level requires caution. A more granular analysis at the department level, though reducing data volume and calculation precision, could provide more accurate insights, considering the unique characteristics of each territory.
+
+Another limitation is the lack of detailed information in our crime dataset, particularly the origin city of the perpetrator. Not all crimes are committed by residents of the city where the crime occurs, and this nuance is not accounted for in our analysis. To gain a more comprehensive understanding of trends, having the same crime dataset for multiple years could be beneficial. The current study only provides a snapshot of 2019, while crime dynamics evolve through the years, as illustrated in previous graphics. 
+Indeed, incorporating data from multiple years, especially around election years, could offer valuable insights into the impact of political changes on criminality. Analyzing trends over time, particularly in relation to the LePen variable, would provide a more nuanced understanding of how government shifts influence crime rates. Moreover, municipal elections may better capture local sentiments and dynamics, potentially offering a more accurate reflection of the community's stance, which could have a distinct influence on crime behavior.
+Including such localized political data, instead of national votation data would enhance the precision and relevance of the analysis.
+
+Nevertheless, this project provides an overview of the distribution and characteristics of crime across the French territory, its evolution, and its main drivers. It allowed us to explore the distribution of key socio-economic indicators at both the departmental and local levels. We hope that this work will be as useful to you as it has been enjoyable for us to prepare. 
+
+
+
+

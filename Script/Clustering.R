@@ -10,11 +10,13 @@ library(plotly)
 Dep_data <- read_csv(here::here("data_end/Everything_by_dep.csv"))
 
 Data_to_cluster <- Dep_data[c(3, 6, 7, 8, 10, 11)]
+dMatrix <- data.frame(cor(Data_to_cluster))
 #distance matrix
 Dep_dist <- dist(Data_to_cluster, method= "euclidean", diag = FALSE, upper = FALSE)
 #build dendrogram
 Dep_completelink <- hclust(Dep_dist, method = 'average')
 
+plot_completeLink <- plot(Dep_completelink)
 
 #look who belong to what
 Cluster_numbers <- cutree(Dep_completelink, k= 3)
@@ -72,7 +74,7 @@ cluster_plot <- ggplot(data_with_clust, aes(x = Lepen_score, y = Unemp_2019, col
   geom_text(label= data_with_clust$Dep_name, nudge_x = -0.5, nudge_y = 0.25, check_overlap = TRUE) +
   labs(title = "Visualization of cluster by mapping Unemployement and Crime rate", x = "Score Lepen", y = "Unemployment")
 
-
+cluster_facet <- cluster_plot + facet_wrap(~clust_number, nrow = 2)
 #map our new results
 
 data_cluster_geom_means <- left_join(border, data_with_clust, join_by("Dep_number"))
