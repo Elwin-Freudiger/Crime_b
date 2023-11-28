@@ -332,7 +332,7 @@ leaf_cap_map <- leaflet(capped_both) %>%
 
 #We load a dataset that gives us the center of a town
 Everything_by_town <- read_csv(here::here("data_end/Everything_by_town.csv"))
-Cities <- read_csv("Raw_data/villes_france.csv", col_names = FALSE)
+Cities <- read_csv(here::here("Raw_data/villes_france.csv"), col_names = FALSE)
 City_center <- Cities |> select(c(11, 21, 20)) |>
   rename(Town_code = `X11`, 
          Latitude = `X21`,
@@ -373,20 +373,5 @@ circle_map <- circle_map %>%
   addLayersControl(
     overlayGroups = as.character(grouped),  # Convert department numbers to character
     options = layersControlOptions(collapsed = FALSE)
-  ) |> hideGroup(grouped) |> #start with every layer hidden by default
+  ) |> hideGroup(grouped) #start with every layer hidden by default
 
-
-
-
-
-  addTiles() |>
-  addCircles(
-    ~Longitude, ~Latitude,
-    weight = 1,
-    fillColor = "red",
-    stroke = TRUE,
-    color = "red",
-    fillOpacity = 0.2,
-    radius = ~(Rate_per_1k*500),
-    popup = ~paste("Crime rate:", Density_2019)
-    )
