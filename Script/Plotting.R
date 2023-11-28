@@ -298,32 +298,32 @@ leaf_cap_map <- leaflet(capped_both) %>%
               fillColor = ~pal_cap(Unemp_2019),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Unemp_2019)) %>% 
+              label = ~paste0(Dep_name, ": ", round(Unemp_2019, 3))) %>% 
   addPolygons(group = "School rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
               fillColor = ~pal_cap(Pass_rate),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Pass_rate)) %>% 
+              label = ~paste0(Dep_name, ": ", round(Pass_rate, 3))) %>% 
   addPolygons(group = "Lepen Score", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
               fillColor = ~pal_cap(Lepen_score),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Lepen_score)) %>% 
+              label = ~paste0(Dep_name, ": ", round(Lepen_score, 3))) %>% 
   addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
               fillColor = ~pal_cap(Cap_immig),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Immig_rate)) %>% 
+              label = ~paste0(Dep_name, ": ", round(Immig_rate, 3))) %>% 
   addPolygons(group = "Density", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
               fillColor = ~pal_cap(Cap_density),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Density_2019)) %>% 
+              label = ~paste0(Dep_name, ": ", round(Density_2019, 3))) %>% 
   addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
               fillColor = ~pal_cap(Cap_crime),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Crime_rate_1k)) %>% 
+              label = ~paste0(Dep_name, ": ", round(Crime_rate_1k, 3))) %>% 
   addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School rate", "Lepen score", "Immigration", "Density"),
                    options = layersControlOptions(collapsed = FALSE))
 
