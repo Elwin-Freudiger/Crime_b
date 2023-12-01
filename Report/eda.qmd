@@ -57,14 +57,11 @@ The effect of the COVID-19 pandemic can also be observed as most crimes have see
 For example, theft without violence saw a sharp drop and its levels have not gone back to 2019 levels of theft.
 
 The Types of crime committed also depend on the location.
-::: {#fig-elephants layout-ncol=2}
 ```{r, echo=FALSE, message=FALSE}
+#| layout-ncol: 2
 plot75
-```
-```{r, echo=FALSE, message=FALSE}
 plot18
 ```
-:::
 In these graphs, we can see the difference in the types of crime committed in the Paris department and in the Cher department.
 Cher is sparsely populated department.
 Here we observe that in Paris, theft without violence is the number one committed crime.
@@ -147,7 +144,7 @@ We create a map using leaflet. Here it should be noted that for clarity reasons,
 circle_map
 ```
 
-In the above map, one can see the crime rate for many towns in France. To display them, simply click on the desired department. This was done to avoid confusing overlap, especially in the Paris region. It shoudl be noted that not all towns are represented here. 
+In the above map, one can see the crime rate for many towns in France. To display them, simply click on the desired department. This was done to avoid confusing overlap, especially in the Paris region. It should be noted that not all towns are represented here. Furthermore, the circle center may be slightly off from the city center, this is because the coordinates used are the center of city limits, which often does not line up with the "economical" city center for example.
 
 ## Clustering 
 
@@ -205,4 +202,4 @@ As before, we will map it for more clarity.
 cluster_map_means
 ```
 
-Overall, during this clustering exercise, our main learning is that Paris and it's suburbs are very big compared to the rest of France, so much that it tends skew the analysis. For our final report, it could be interesting to remove Paris and the prarisian region to be able to conduct an analysis of the rest of our departments
+Overall, during this clustering exercise, our main learning is that Paris and it's suburbs are very big compared to the rest of France, so much that it tends skew the analysis.

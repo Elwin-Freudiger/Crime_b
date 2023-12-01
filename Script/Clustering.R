@@ -5,6 +5,7 @@ library(ggplot2)
 library(corrplot)
 library(cluster)
 library(plotly)
+library(sf)
 
 #Load the dataset
 Dep_data <- read_csv(here::here("data_end/Everything_by_dep.csv"))

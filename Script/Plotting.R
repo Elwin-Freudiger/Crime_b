@@ -329,17 +329,21 @@ leaf_cap_map <- leaflet(capped_both) %>%
 
 #Now we will create a leaflet map at the Town level.
 
-#We load a dataset that gives us the center of a town
-Everything_by_town <- read_csv(here::here("data_end/Everything_by_town.csv"))
-Cities <- read_csv(here::here("Raw_data/villes_france.csv"), col_names = FALSE)
-City_center <- Cities |> select(c(11, 21, 20)) |>
-  rename(Town_code = `X11`, 
-         Latitude = `X21`,
-         Longitude = `X20`)
-both_town_center <- left_join(City_center, Everything_by_town, join_by("Town_code")) |>
+#We load a dataset that gives us the town center, in latitude and longitude
+cities <- read_csv(here:here("Raw_data/cities_hope.csv"))
+Center_city <- cities |> 
+  select(insee_code, latitude, longitude) |>
+  rename(Town_code = insee_code, 
+         Latitude = latitude,
+         Longitude = longitude)
+#extract location, join it with our previous dataset.
+#omit NA values, and duplicates, we also filter any non metropolitan values
+both_town_center <- left_join(Center_city, Everything_by_town, join_by("Town_code")) |>
   na.omit() |>
-  filter(!grepl("^97", Town_code))
+  filter(!grepl("^97", Town_code)) |>
+  distinct()
 
+#Create the map for each town
 circle_map <- leaflet() %>%
   addTiles()
 
@@ -363,7 +367,8 @@ for (i in 1:length(grouped)) {
       stroke = TRUE,
       color = "red",
       fillOpacity = 0.2,
-      radius = ~Rate_per_1k * 300 #chose the circles radius
+      radius = ~Rate_per_1k * 500, #chose the circles radius
+      popup = ~paste(Town_name, "<br/> <b>", round(data$Rate_per_1k/1000, 3), " </b>Crimes per capita")
     )
 }
 
@@ -371,6 +376,5 @@ for (i in 1:length(grouped)) {
 circle_map <- circle_map %>%
   addLayersControl(
     overlayGroups = as.character(grouped),  # Convert department numbers to character
-    options = layersControlOptions(collapsed = FALSE)
-  ) |> hideGroup(grouped) #start with every layer hidden by default
-
+    options = layersControlOptions(collapsed = TRUE)) |>
+  hideGroup(grouped) #start with every layer hidden by default
