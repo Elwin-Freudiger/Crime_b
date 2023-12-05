@@ -418,7 +418,7 @@ Povr_2019 <- Pov_2019 |>
   na.omit() |>
   rename(Town_code = CODGEO,
          Povrety_2019 = TP6019,
-         Intensity_povrety = TP60IP19)
+         Intensity_povrety = TP60IP19) 
 
 #####################################################################################
 
@@ -489,6 +489,10 @@ Crime_per_type_town <- Crime_type_town |>
          No_diploma_rate1k = No_diploma_rate1k/1000,
          Immig_rate = Immig_rate/1000,
          Unemp_2019 = Unemp_2019/100)
-
 #We put everything on a percent basis
 
+#Put DT interactive tables. If it's not too big
+#library(DT)
+#Interact_everything_by_dep <- datatable(Full_data_dep)
+#Interact_everything_by_town <- datatable(Everything_by_town)
+#Interact_crime_per_type_town <- datatable(Crime_per_type_town)

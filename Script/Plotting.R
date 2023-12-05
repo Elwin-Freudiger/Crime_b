@@ -11,6 +11,7 @@ library(sf)
 library(ggspatial)
 library(leaflet)
 library(leaflet.extras)
+library(treemap)
 
 #Plot the crime rate in 2019 of the most criminal states and least criminal states.
 Crime_2019 <- read.csv(here::here("data_end/Everything_by_dep.csv"))
@@ -64,7 +65,7 @@ Five_hist <- Five_common %>%
   summarize(Rate_per_1k = mean(Rate_per_1k, na.rm = TRUE))
 
 evol5 <- ggplot(Five_hist) +
-  geom_col(aes(x = as.factor(Year), y = Rate_per_1k, fill = Type), position = "dodge") +
+  geom_col(aes(x = as.factor(Year+2000), y = Rate_per_1k, fill = Type), position = "dodge") +
   labs(title="Evolution of types of crime by year", y = "Rate per thousand", x = "Years")
 evol5 <- ggplotly(evol5)
 
@@ -113,6 +114,19 @@ unemploy_overall <- ggplot(Unemployment_fr, aes(x = Year, y = Rate, group = 1)) 
                    labels=seq(1982, 2023, 2))
 
 
+#Immigration total by state
+Immigration_2019 <- read_excel(here::here("Raw_data/Immigration_2019.xlsx"), 
+                               sheet = "Pop0_R", skip = 2)
+Immig_tree <- Immigration_2019[1:13, 1:2] |>
+  rename(Reg_name = `...1`)
+
+Tree <- treemap(Immig_tree, 
+                index = "Reg_name", 
+                vSize = "Immigrés", 
+                type = "index", 
+                width = 800, 
+                height = 400, 
+                title = "Repartition of total of Immigrants by Region")
 
 
 #Unemployment of every departement in 2022 interactive graph
@@ -133,8 +147,7 @@ Bars <- ggplot(Unemp_2019, aes(x = reorder(Departement, Rate), y = Rate, fill = 
 Bars <- ggplotly(Bars)
 
 
-#Create a dataframe whith a geometry column
-
+#Create a dataframe whith a geometry column, the geometry is department borders
 border <- st_read(here::here("data_end/Departement_geoson_carte.geojson"))
 colnames(border) <- c("Dep_number", "Dep_name", "geometry")
 Everything_by_dep <- read_csv(here::here("data_end/Everything_by_dep.csv"))
@@ -208,41 +221,17 @@ school_map <- ggplot() +
 
 #plot the map with leaflet
 
-
 #By department
 #We first divide the values in 10 deciles. This means that our data is divided into 10% of the data ordered
 both_category <- both |> select(Dep_number, Dep_name.x, Unemp_2019, 
                                 Crime_rate_1k, Pass_rate, Lepen_score, 
                                 Immig_rate, Density_2019, geometry) |>
-  rename(Dep_name = Dep_name.x)
+  rename(Dep_name = Dep_name.x) 
+
+
+  
 
 #Bin the data into 10 intervals of same value
-Categorical_data <- both_category |>
-  mutate(category_unemp = cut(Crime_rate_1k, 
-                              breaks = seq(min(both_category$Crime_rate_1k), max(both_category$Crime_rate_1k), 
-                                           (max(both_category$Crime_rate_1k) - min(both_category$Crime_rate_1k))/10), 
-                              labels = seq(1, 10, 1), include.lowest = TRUE),
-         category_crime = cut(Unemp_2019, 
-                              breaks = seq(min(both_category$Unemp_2019), max(both_category$Unemp_2019), 
-                                            (max(both_category$Unemp_2019) - min(both_category$Unemp_2019))/10), 
-                              labels = seq(1, 10, 1), include.lowest = TRUE),
-         category_school = cut(Pass_rate,
-                               breaks = seq(min(both_category$Pass_rate), max(both_category$Pass_rate), 
-                                            (max(both_category$Pass_rate) - min(both_category$Pass_rate))/10), 
-                               labels = seq(10, 1, -1), include.lowest = TRUE),
-         category_lepen = cut(Lepen_score, 
-                              breaks = seq(min(both_category$Lepen_score), max(both_category$Lepen_score), 
-                                                        (max(both_category$Lepen_score) - min(both_category$Lepen_score))/10),
-                              labels = seq(1, 10, 1), include.lowest = TRUE),
-         category_immig = cut(Immig_rate, 
-                              breaks =  seq(min(both_category$Immig_rate), max(both_category$Immig_rate), 
-                                                        (max(both_category$Immig_rate) - min(both_category$Immig_rate))/10),
-                              labels = seq(1, 10, 1), include.lowest = TRUE),  
-         category_density = cut(Density_2019, 
-                              breaks = seq(min(both_category$Density_2019), max(both_category$Density_2019), 
-                                                           (max(both_category$Density_2019) - min(both_category$Density_2019))/10),
-                              labels = seq(1, 10, 1), include.lowest = TRUE)
-         )
 pal <- colorFactor("RdYlGn", NULL)
 
 leaf_map <- leaflet(Categorical_data) %>%
@@ -330,12 +319,15 @@ leaf_cap_map <- leaflet(capped_both) %>%
 #Now we will create a leaflet map at the Town level.
 
 #We load a dataset that gives us the town center, in latitude and longitude
-cities <- read_csv(here:here("Raw_data/cities_hope.csv"))
+cities <- read_csv(here::here("Raw_data/cities_hope.csv"))
 Center_city <- cities |> 
   select(insee_code, latitude, longitude) |>
   rename(Town_code = insee_code, 
          Latitude = latitude,
          Longitude = longitude)
+
+#Load the data by town
+Everything_by_town <- read_csv("data_end/Everything_by_town.csv")
 #extract location, join it with our previous dataset.
 #omit NA values, and duplicates, we also filter any non metropolitan values
 both_town_center <- left_join(Center_city, Everything_by_town, join_by("Town_code")) |>
@@ -367,7 +359,7 @@ for (i in 1:length(grouped)) {
       stroke = TRUE,
       color = "red",
       fillOpacity = 0.2,
-      radius = ~Rate_per_1k * 500, #chose the circles radius
+      radius = ~(Rate_per_1k)*1000, #chose the circles radius
       popup = ~paste(Town_name, "<br/> <b>", round(data$Rate_per_1k/1000, 3), " </b>Crimes per capita")
     )
 }
@@ -378,3 +370,59 @@ circle_map <- circle_map %>%
     overlayGroups = as.character(grouped),  # Convert department numbers to character
     options = layersControlOptions(collapsed = TRUE)) |>
   hideGroup(grouped) #start with every layer hidden by default
+
+
+
+
+#Data distribution and Plotting by town
+#Load the cleaned dataset, with only towns above 1700 inhabitants
+Crime_per_type_town <- read_csv("data_end/Crime_per_type_town.csv")
+#Total crime rate
+Density_crime_rate <- ggplot(Everything_by_town, aes(x = Rate_per_1k)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of the crime Rate", x = "Crime rate per thousand people")
+
+#Total crime
+Density_crime_total <- ggplot(Everything_by_town, aes(x = Total_crime)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of the total crime", x = "Total number of crimes")
+
+#Total population
+Density_population <- ggplot(Everything_by_town, aes(x = Total_pop)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of the population", x = "Number of inhabitants per town")
+
+#Density
+Density_density <- ggplot(Everything_by_town, aes(x = Density_2019)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of the Density", x = "Number of inhabitants per square kilometers")
+
+#Score of Lepen
+Density_Lepen <- ggplot(Everything_by_town, aes(x = Lepen)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Marine Lepen's Score", x = "Score of Marine Lepen in %")
+
+#Poverty
+Density_poverty <- ggplot(Everything_by_town, aes(x = Povrety_2019)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Poverty levels", x = "Share of people below the poverty line in %")
+
+#Intensity Poverty
+Density_intensity_poverty <- ggplot(Everything_by_town, aes(x = Intensity_povrety)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Intensity of Poverty", x = "Difference between Median earning level of poor people and Poverty line")
+
+#No diploma
+Density_no_diploma <- ggplot(Everything_by_town, aes(x = No_diploma_rate1k)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of people without a diploma", x = "Number of people without a diploma per thousand people")
+
+#Immigration rate
+Density_immig <- ggplot(Everything_by_town, aes(x = Immig_rate)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Immigration rate", x = "Number of immigrants per thousand people")
+
+#Unemployment
+Density_unemp <- ggplot(Everything_by_town, aes(x = Unemp_2019/100)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Unemployment numbers", x = "Share of people unemployed in %")

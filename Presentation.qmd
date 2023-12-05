@@ -1,0 +1,137 @@
+---
+title: "What is the impact of socio-economic factors on Criminality in France?"
+format: 
+  revealjs:
+    scrollable: true
+editor: visual
+---
+
+```{r, echo = FALSE, message = FALSE, include=FALSE}
+load(file = here::here("Report/Data_for_EDA.RData"))
+source(here::here("Script/Regression.R"))
+options(gt.summary.table.width = 0.7)
+
+```
+
+# Introduction
+
+## Research questions {.smaller}
+
+-   **Can the criminality rate in France be explained using the unemployment rate ?**
+
+-   **Can the criminality rate in France be explained using the poverty rate ?**
+
+-   **Can the criminality rate in France be explained using education indicators ?**
+
+-   **Can the density of population in territories explain criminality ?**
+
+-   **Can the immigration rate explain criminality ?**
+
+-   **Can the previous presidential results in territories have an impact on criminality ?**
+
+-   **Is there a correlation between these mentioned variables ?**
+
+## Motivations
+
+Crime is a polarizing topic, most people do not agree on what causes crime. A statistical analysis could give leads into the causes of criminality.
+
+# Variables
+
+We will consider the following macroeconomic variables:
+
+-   Poverty rate
+
+-   Unemployment rate
+
+-   Percentage of people above 25 without a diploma
+
+-   Density of Population
+
+-   Results of previous presidential elections
+
+-   Immigration
+
+## Extreme values {.smaller}
+
+Most of our dataset were challenging to use because there were some surprising extreme values.
+
+Lessons from our datasets:
+
+Paris is an outlier, proven by clustering
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+cluster_map
+```
+
+## Surprising values
+
+Some villages "Died for France", now have population of 0.
+
+High crime rate in:
+
+-   Touristic destinations
+
+-    Airports
+
+Density varies and may be very low in some towns because of Natural Reserves.
+
+## Maps
+
+```{r, echo=FALSE, message=FALSE, results='asis'}
+leaf_cap_map
+```
+
+## Regressions
+
+With all types of crime:
+
+```{r, echo = FALSE, message = FALSE, results='asis'}
+x <- Full_model %>% 
+  tbl_regression()
+y <- Reduce_model %>% 
+  tbl_regression()
+
+tbl_merge(
+  tbls = list(x, y),
+  tab_spanner = c("**Full model**", "**Reduced model**")
+)
+```
+
+No issues of multicollinearity (VIF<5) low Adjusted R square.
+New regressions this time for each crime type.
+
+## Assault and Battery
+
+```{r, echo = FALSE, message = FALSE, results='asis'}
+Assault_model_final %>% 
+  tbl_regression()
+```
+
+## Burglaries
+
+```{r, echo = FALSE, message = FALSE, results='asis'}
+Burglary_model_final %>% 
+  tbl_regression()
+```
+
+## Intentional damage and destructions
+
+```{r, echo = FALSE, message = FALSE, results='asis'}
+Damage_model_final %>% 
+  tbl_regression()
+```
+
+## Drug Use
+
+```{r, echo = FALSE, message = FALSE, results='asis'}
+Drug_model_final %>% 
+  tbl_regression()
+```
+
+
+## Theft without violence
+
+```{r, echo = FALSE, message = FALSE, results='asis'}
+Theft_model_final %>% 
+  tbl_regression()
+```
