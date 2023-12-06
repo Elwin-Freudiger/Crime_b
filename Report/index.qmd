@@ -10,9 +10,13 @@ format:
     toc-location: left
     embed-resources: TRUE
     number-sections: TRUE
-
 ---
+
+**Did you know?**
+
+This report is available online: [Website](https://elwin-freudiger.github.io/Crime_b/)
+
+The public repository can also be found here: [Git repository](https://github.com/Elwin-Freudiger/Crime_b)
 
 ```{r child = c("intro.qmd", "data.qmd", "eda.qmd", "analysis.qmd", "concl.qmd")}
 ```
-

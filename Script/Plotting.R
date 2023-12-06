@@ -12,6 +12,7 @@ library(ggspatial)
 library(leaflet)
 library(leaflet.extras)
 library(treemap)
+library(scales)
 
 #Plot the crime rate in 2019 of the most criminal states and least criminal states.
 Crime_2019 <- read.csv(here::here("data_end/Everything_by_dep.csv"))
@@ -216,108 +217,60 @@ school_map <- ggplot() +
         panel.grid = element_blank()) +
   labs(title = "Middle school pass rate")
 
-
-
-
 #plot the map with leaflet
-
 #By department
 #We first divide the values in 10 deciles. This means that our data is divided into 10% of the data ordered
 both_category <- both |> select(Dep_number, Dep_name.x, Unemp_2019, 
                                 Crime_rate_1k, Pass_rate, Lepen_score, 
                                 Immig_rate, Density_2019, geometry) |>
-  rename(Dep_name = Dep_name.x) 
+  rename(Dep_name = Dep_name.x) |>
+  mutate(Crime_rate_1k = ifelse(Crime_rate_1k >= 100, NA, Crime_rate_1k),
+         Density_2019 = ifelse(Density_2019 > 1000, NA, Density_2019))
 
+pal <- colorNumeric("YlOrRd", na.color = "darkgray", NULL)
 
-  
-
-#Bin the data into 10 intervals of same value
-pal <- colorFactor("RdYlGn", NULL)
-
-leaf_map <- leaflet(Categorical_data) %>%
+leaf_map <- leaflet(both_category) %>%
   addTiles() %>%
-  addPolygons(group = "Unemployment", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal(category_unemp),
+  addPolygons(group = "Unemployment", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(rescale(Unemp_2019)),
               color = "white",
               weight = 0.3,
               label = ~paste0(Dep_name, ": ", Unemp_2019)) %>% 
-  addPolygons(group = "School rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal(category_school),
+  addPolygons(group = "School fail rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(rescale(1-Pass_rate)),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Pass_rate)) %>% 
+              label = ~paste0(Dep_name, ": ", (1-Pass_rate))) %>% 
   addPolygons(group = "Lepen Score", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
-              fillColor = ~pal(category_lepen),
+              fillColor = ~pal(rescale(Lepen_score)),
               color = "white",
               weight = 0.3,
               label = ~paste0(Dep_name, ": ", Lepen_score)) %>% 
-  addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal(category_immig),
+  addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(rescale(Immig_rate)),
               color = "white",
               weight = 0.3,
               label = ~paste0(Dep_name, ": ", Immig_rate)) %>% 
-  addPolygons(group = "Density", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal(category_density),
+  addPolygons(group = "Density", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(rescale(Density_2019)),
               color = "white",
               weight = 0.3,
               label = ~paste0(Dep_name, ": ", Density_2019)) %>% 
-  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(Crime_rate_1k),
+  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(rescale(Crime_rate_1k)),
               color = "white",
               weight = 0.3,
               label = ~paste0(Dep_name, ": ", Crime_rate_1k)) %>% 
-  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School rate", "Lepen score", "Immigration", "Density"),
-                   options = layersControlOptions(collapsed = FALSE))
-
-#Last ditch attempt, try to cap the values that are too high
-capped_both <- both |>
-  mutate(Cap_crime = ifelse(Crime_rate_1k > 75, 75, Crime_rate_1k),
-         Cap_immig = ifelse(Immig_rate > 0.15, 0.15, Immig_rate),
-         Cap_density = ifelse(Density_2019 > 750, 750, Density_2019)) |>
-  select(-Dep_name.x) |>
-  rename(Dep_name = Dep_name.y)
-
-
-pal_cap <- colorFactor("viridis", NULL)
-
-leaf_cap_map <- leaflet(capped_both) %>%
-  addTiles() %>%
-  addPolygons(group = "Unemployment", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal_cap(Unemp_2019),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", round(Unemp_2019, 3))) %>% 
-  addPolygons(group = "School rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal_cap(Pass_rate),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", round(Pass_rate, 3))) %>% 
-  addPolygons(group = "Lepen Score", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal_cap(Lepen_score),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", round(Lepen_score, 3))) %>% 
-  addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal_cap(Cap_immig),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", round(Immig_rate, 3))) %>% 
-  addPolygons(group = "Density", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal_cap(Cap_density),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", round(Density_2019, 3))) %>% 
-  addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.7,
-              fillColor = ~pal_cap(Cap_crime),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", round(Crime_rate_1k, 3))) %>% 
-  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School rate", "Lepen score", "Immigration", "Density"),
+  addLegend(
+    position = "bottomright",
+    pal = pal,
+    values = ~rescale(Crime_rate_1k),  # Values are set to the Unemp_2019 column for this legend
+    title = "Color scale") |>
+  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School fail rate", "Lepen score", "Immigration", "Density"),
                    options = layersControlOptions(collapsed = FALSE))
 
 
 #Now we will create a leaflet map at the Town level.
-
 #We load a dataset that gives us the town center, in latitude and longitude
 cities <- read_csv(here::here("Raw_data/cities_hope.csv"))
 Center_city <- cities |> 
@@ -370,8 +323,6 @@ circle_map <- circle_map %>%
     overlayGroups = as.character(grouped),  # Convert department numbers to character
     options = layersControlOptions(collapsed = TRUE)) |>
   hideGroup(grouped) #start with every layer hidden by default
-
-
 
 
 #Data distribution and Plotting by town

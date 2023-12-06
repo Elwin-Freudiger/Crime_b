@@ -142,7 +142,7 @@ immig_map
 Lastly, this map shows us the immigration rate, be department. As we can see, Immigrants are mostly located in the vicinity of the Paris region. Other notable areas of higher immigration are border regions in the south and in the east. 
 
 ```{r, message=FALSE, echo=FALSE}
-leaf_cap_map
+leaf_map
 ```
 
 We create a map using leaflet. Here it should be noted that for clarity reasons, the values of Immigration, Density and Crime rate have all been capped. This is because the parisian region is an outlier for these variables. As such, the true value of the crime rate is not accuratly represented for these variables. This is a tradeoff between showing the differences of between french departments and representing the Paris region criminality.
