@@ -59,16 +59,25 @@ Five_common <- Type_per_year %>%
                      "Vols sans violence contre des personnes",
                      "Coups et blessures volontaires",
                      "Cambriolages de logement",
-                     "Usage de stupéfiants")) 
+                     "Usage de stupéfiants"))
+
+English <- c("Cambriolages de logement" = "Burglaries",
+                      "Coups et blessures volontaires" = "Assault and Battery",
+                      "Destructions et dégradations volontaires" = "Intentional damage and destructions",
+                      "Usage de stupéfiants" = "Drug use",
+                      "Vols sans violence contre des personnes" = "Theft without violence")
 
 Five_hist <- Five_common %>%
   group_by(Year, Type) %>%
   summarize(Rate_per_1k = mean(Rate_per_1k, na.rm = TRUE))
 
+Five_hist$Type <- English[Five_hist$Type]
+
 evol5 <- ggplot(Five_hist) +
-  geom_col(aes(x = as.factor(Year+2000), y = Rate_per_1k, fill = Type), position = "dodge") +
+  geom_col(aes(x = as.factor(Year+2000), y = Rate_per_1k, fill = reorder(Type, Rate_per_1k)), position = "dodge") +
   labs(title="Evolution of types of crime by year", y = "Rate per thousand", x = "Years")
-evol5 <- ggplotly(evol5)
+evol5 <- ggplotly(evol5)|>
+  layout(legend = list(title = list(text = "Type of Crime")))
 
 #Comparison of Paris and a rural departement
 Dep75 <- Five_common %>%
@@ -121,14 +130,6 @@ Immigration_2019 <- read_excel(here::here("Raw_data/Immigration_2019.xlsx"),
 Immig_tree <- Immigration_2019[1:13, 1:2] |>
   rename(Reg_name = `...1`)
 
-Tree <- treemap(Immig_tree, 
-                index = "Reg_name", 
-                vSize = "Immigrés", 
-                type = "index", 
-                width = 800, 
-                height = 400, 
-                title = "Repartition of total of Immigrants by Region")
-
 
 #Unemployment of every departement in 2022 interactive graph
 Unemployment <- read.csv(here::here("data_end/Unemployment_year.csv"))
@@ -139,13 +140,13 @@ Unemp_2019 <- arrange(Unemployment_2019, desc(Rate))
 
 
 Bars <- ggplot(Unemp_2019, aes(x = reorder(Departement, Rate), y = Rate, fill = Departement)) +
-  geom_col() + 
-  theme(axis.text.y=element_blank(), legend.position = "none")+
-  labs(title = "Unemployment rate in 2019 by Departement", x = "Rate(%)") +
+  geom_col() +
+  labs(title = "Unemployment rate in 2019 by Department", y = "Rate(%)", x = "Department name", color = "Department") +
   theme_minimal() +
   coord_flip()
 
-Bars <- ggplotly(Bars)
+Bars <- ggplotly(Bars) |>
+  layout(showlegend = FALSE)
 
 
 #Create a dataframe whith a geometry column, the geometry is department borders

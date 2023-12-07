@@ -129,7 +129,7 @@ Source: [Population by diploma by town](https://www.insee.fr/fr/statistiques/189
 
 #### 2017 Election results
 
-```{r, echo = FALSE, message = FALSE, results = 'asis'}
+```{r, echo = FALSE, message = FALSE}
 knitr::kable(head(Presidentielle_2017), "html")
 ```
 
@@ -143,7 +143,7 @@ Source: [2017 Election results by town](https://www.data.gouv.fr/fr/datasets/ele
 knitr::kable(head(Pov_2019), "html")
 ```
 
-This dataset does not have easily understable column names. The first is CODGEO, the town code. The columns starting with "TP" indicate poverty rates. the number afterwards indicate the rate at which people are considered poor. For example, with 60% which is the commonly used cutoff for poverty, the number means that a certain percentage of people earn only 60% of the median revenue in France. The column "TP60IP19" is the poverty intensity. basically how far from the median revenue are those poor people. We will also use this infomarmation. The remaining columns divide those values by age
+This dataset does not have easily understable column names. The first is CODGEO, the town code. The columns starting with "TP" indicate poverty rates. the number afterwards indicate the rate at which people are considered poor. For example, with 60% which is the commonly used cutoff for poverty, the number means that a certain percentage of people earn only 60% of the median revenue in France. The column "TP60IP19" is the poverty intensity. This is the difference between the poverty threshold and the median revenue of people considered poor. The remaining columns divide those values by age.
 
 Source: [Poverty by town](https://www.insee.fr/fr/statistiques/6036907)
 
@@ -401,7 +401,7 @@ Type_per_year <- Type_per_year |>
   summarize(Number = sum(Number))
 ```
 
-We use this code to get the data by type and by year for each town. First, we only select values indicated as publishing their data ("diff"). We then only take metropolitan departments, by filtering every row except those starting with 97(the indicator for outer seas department). We then duplicate the town code to create a Department column. we rename the columns for more clarity. we then create our department column by **substr()** the first 2 digits of the town code. We now need to compute the rate for a thousand. To do this, we first must replace every comma by a point, that is because European notation of numbers uses a comma instead of a point for decimal numbers. we then use \***group_by()** and **summarize()** to get the mean rate. and use the same functions to get the total number of crimes. This dataframe will be useful for our plots
+We use this code to get the data by type and by year for each town. First, we only select values indicated as publishing their data ("diff"). We then only take metropolitan departments, by filtering every row except those starting with 97(the indicator for outer seas department). We then duplicate the town code to create a Department column. we rename the columns for more clarity. we then create our department column by **substr()** the first 2 digits of the town code. We now need to compute the rate for a thousand. To do this, we first must replace every comma by a point, that is because European notation of numbers uses a comma instead of a point for decimal numbers. we then use **group_by()** and **summarize()** to get the mean rate. and use the same functions to get the total number of crimes. This dataframe will be useful for our plots
 
 ```{r, eval=FALSE}
 Crime_2019_town <- Type_per_year |>
@@ -430,7 +430,7 @@ Crime_type_town <- Type_per_year |>
 Crime_type_town[is.na(Crime_type_town)] <- 0
 ```
 
-We also create a dataset where we keep the type of crime commited. To do this, we simply do a pivot_wider() and select our types of crime. In this instance we only focus on the 5 most commited crimes. Since some cities do not have every type of crime present, we are left with a substantial amount of NA values. We decide to replace our NA's with zeroes since an NA value indicates that there was less than 5 instances of a crime.
+We also create a dataset where we keep the type of crime commited. To do this, we simply do a **pivot_wider()** and select our types of crime. In this instance we only focus on the 5 most commited crimes. Since some cities do not have every type of crime present, we are left with a substantial amount of NA values. We decide to replace our NA's with zeroes since an NA value indicates that there was less than 5 instances of a crime.
 
 #### Density
 
@@ -648,7 +648,8 @@ knitr::kable(head(Everything_by_town), format = "html")
 As we can see, this dataset includes many towns of very few inhabitants. And many Missing values have been introduced into this dataset. As such, we will omit those missing values that were mostly located in the Poverty department.
 
 We finally have this clean dataset:
-```{r, echo=FALSE, message=FALSE, results='asis'}
+
+```{r, echo=FALSE, message=FALSE}
 knitr::kable(head(Crime_per_type_town), format = "html")
 ```
 

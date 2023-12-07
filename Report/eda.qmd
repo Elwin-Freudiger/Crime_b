@@ -56,8 +56,7 @@ The effect of the COVID-19 pandemic can also be observed as most crimes have see
 For example, theft without violence saw a sharp drop and its levels have not gone back to 2019 levels of theft.
 
 The Types of crime committed also depend on the location.
-```{r, echo=FALSE, message=FALSE, include=FALSE, results='asis'}
-#| layout-ncol: 2
+```{r, echo=FALSE, message=FALSE, fig.show="asis"}
 plot75
 plot18
 ```
@@ -106,19 +105,29 @@ This may be an indication of what we could possibly find with the statistical re
 
 We can use a Treemap to visualize the total number of immigrants by Region. Regions in France contain several Departments.
 ```{r, message=FALSE, echo=FALSE, results='asis'}
-Tree
+library(treemap)
+treemap(Immig_tree, 
+                index = "Reg_name", 
+                vSize = "Immigrés", 
+                type = "index", 
+                width = 800, 
+                height = 400, 
+                title = "Repartition of total of Immigrants by Region")
 ```
+
 As we can see, most immigrants are in the Paris area. These visualizations really put into perspective how big the Paris region is compared to the rest of the country.
 
 ## Mapping
 ```{r, message=FALSE, echo=FALSE}
 plot_map
 ```
+
 This map computes the unemployment percentage in every department.
 
 ```{r, message=FALSE, echo=FALSE}
 crime_map
 ```
+
 This map compute the crime rate in every French department and shows us the important disparity in the amount of crimes committed across the country. As we can see, Paris has a very high crime rate compared to the rest of the departments.
 
 ```{r, message=FALSE, echo=FALSE}
@@ -132,7 +141,8 @@ Here those departments are represented with a darker color.
 ```{r, message=FALSE, echo=FALSE}
 school_map
 ```
-here this map shows the school pass rate for each department at the end of middle school. Unfortunately, no clear trend seems to emerge from the map. Futhermore, the difference between the highest value (**0.9305**) and the lowest value (**0.8274**) is only of 10%. This means that all other values are contained within only 10%. Showing them on a map with colors tends to over-exagerate the differences between values. As such, this map has poor vizualization power and may even be considered somewhat misleading.
+
+This map shows the school pass rate for each department at the end of middle school. Unfortunately, no clear trend seems to emerge from the map. Futhermore, the difference between the highest value (**0.9305**) and the lowest value (**0.8274**) is only of 10%. This means that all other values are contained within only 10%. Showing them on a map with colors tends to over-exagerate the differences between values. As such, this map has poor vizualization power and may even be considered somewhat misleading.
 
 
 ```{r, message=FALSE, echo=FALSE}
@@ -145,7 +155,7 @@ Lastly, this map shows us the immigration rate, be department. As we can see, Im
 leaf_map
 ```
 
-We create a map using leaflet. Here it should be noted that for clarity reasons, the values of Immigration, Density and Crime rate have all been capped. This is because the parisian region is an outlier for these variables. As such, the true value of the crime rate is not accuratly represented for these variables. This is a tradeoff between showing the differences of between french departments and representing the Paris region criminality.
+We create a map using leaflet. Here it should be noted that for clarity reasons. As one can see, the values of Paris and sometimes it's region have been set to NA. This has been done because, Paris is such an outlier in terms of criminality or density that the color scale is unable to show the differences between the remaining departments. As such, it has been decided to take this value out of the scale. for clarity reasons.
 
 ```{r, message=FALSE, echo=FALSE}
 circle_map
@@ -196,6 +206,7 @@ We get the followig scree plot from our analysis:
 ```{r, message=FALSE, echo=FALSE, results='asis'}
 scree_plot
 ```
+
 as we can tell, our optimal number of clusters seems to be 6 clusters.
 
 We'll visualize this using a cluster plot and a facet wrap of Lepen Scores and Unemployment rate, we previously say that the correlation was decently high.
@@ -217,9 +228,10 @@ We will now take a look at our variables to see how our data is distributed and 
 This analysis will be conducted on our dataset with many NA values, also in part to show why we have chosen to reduce our dataset to bigger towns.
 
 ### Total crime rate
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_crime_rate
 ```
+
 of our `r nrow(Everything_by_town)` rows, 26,493 rows are equal to 0. 
 
 It appears in most of our dataset that the Paris department was an outlier and has very unique values. For example for the crime rate Paris has 112 crimes per thousand people which is almost double compared to the second highest values.
@@ -229,14 +241,14 @@ Same observation for the communes where French airports are located such as Rois
 The town of Chessy is also for example home to Disneyland Paris, and sees a very big crime rate.
 
 ### Total population
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_population
 ```
 
 The population dataset also offers some surprises when we found that there were some villages with a population equal to zero. We realized after that that it concerns the « Villages morts pour la France », some villages have been totally destroyed during the First World War and the French government decided to keep the memory by naming a mayor for those villages, responsible for the well being of the sanctuary. 
 
 ### Density
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_density
 ```
  
@@ -244,20 +256,21 @@ The density variable also has her own unique values. We found that some large to
 The most dense towns are usually in the Paris region, with a smaller area. This is the case for Levallois-Perret, bordering Paris and our most dense town.
 
 ### Score of Lepen
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_Lepen
 ```
+
 The scores of Lepen are almost normally distributed. Most of her high scores are usually in the northern regions.
 
 ### Poverty
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_poverty 
 ```
 
 Towns with higher levels of poverty are located mostly in the northern parts of France or in the Paris region. This is not surprising. 
 
 ### Intensity Poverty
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_intensity_poverty 
 ```
 
@@ -266,14 +279,14 @@ This variable is somewhat more surprising, while low intensity of poverty does n
 The explanation for this may may be that many inhabitants from border regions work in the neighbouring country, and said regions often have a low unemployment rate. In the case of Switzerland and Luxemburg, these country offer higher salaries than Switzerland. As such, people below the poverty line are further away from the poverty line, resulting in a high intensity of poverty.
 
 ### No diploma
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_no_diploma
 ```
 
 Towns with a high level people without a diploma are mostly located in former industrial towns and rural areas, where not having a diploma was never a problem. As work usually started at a younger age and was passed down, obtaining a diploma was usally not needed. For example, the city of 	Behren-les-forbach, with about 30% of people over 25 without a diploma is a former mining town. Here work was provided by the mining company, without a need for any diploma. As those mines closed all over France, workers were often left without any suitable alternative to work. This explains in part the current poverty level of 51%.
 
 ### Immigration rate
-```{r, message=FALSE, echo=FALSE, results='asis', include=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Density_immig
 ```
 
