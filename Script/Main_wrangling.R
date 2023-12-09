@@ -492,7 +492,8 @@ Crime_per_type_town <- Crime_type_town |>
 #We put everything on a percent basis
 
 #Put DT interactive tables. If it's not too big
-#library(DT)
-#Interact_everything_by_dep <- datatable(Full_data_dep)
+library(DT)
+Interact_everything_by_dep <- datatable(Full_data_dep)
 #Interact_everything_by_town <- datatable(Everything_by_town)
-#Interact_crime_per_type_town <- datatable(Crime_per_type_town)
+Interact_crime_per_type_town <- datatable(Crime_per_type_town)
+

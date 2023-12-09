@@ -13,6 +13,7 @@ library(leaflet)
 library(leaflet.extras)
 library(treemap)
 library(scales)
+library(RColorBrewer)
 
 #Plot the crime rate in 2019 of the most criminal states and least criminal states.
 Crime_2019 <- read.csv(here::here("data_end/Everything_by_dep.csv"))
@@ -62,8 +63,8 @@ Five_common <- Type_per_year %>%
                      "Usage de stupéfiants"))
 
 English <- c("Cambriolages de logement" = "Burglaries",
-                      "Coups et blessures volontaires" = "Assault and Battery",
-                      "Destructions et dégradations volontaires" = "Intentional damage and destructions",
+                      "Coups et blessures volontaires" = "Assault",
+                      "Destructions et dégradations volontaires" = "Intentional damage",
                       "Usage de stupéfiants" = "Drug use",
                       "Vols sans violence contre des personnes" = "Theft without violence")
 
@@ -79,24 +80,21 @@ evol5 <- ggplot(Five_hist) +
 evol5 <- ggplotly(evol5)|>
   layout(legend = list(title = list(text = "Type of Crime")))
 
-#Comparison of Paris and a rural departement
-Dep75 <- Five_common %>%
+
+#Comparison of Paris and a rural department
+#select the department, compute the average and translate the names
+Compare_dep <- Five_common %>%
   group_by(Departement, Type, Year) %>%
   summarize(Rate_per_1k= mean(Rate_per_1k, na.rm=TRUE)) %>%
-  filter(Departement=="75")
+  filter(Departement %in% c("75", "18"))
+Compare_dep$Type <- English[Compare_dep$Type]
 
-Dep18 <- Five_common %>%
-  group_by(Departement, Type, Year) %>%
-  summarize(Rate_per_1k= mean(Rate_per_1k, na.rm=TRUE)) %>%
-  filter(Departement=="18")
-
-plot75 <-  ggplot(Dep75, aes(x=Year, y=Rate_per_1k, color=Type)) + 
+#plot it. 
+Compare_plot <-  ggplot(Compare_dep, aes(x=(Year+2000), y=Rate_per_1k, color=Type)) + 
   geom_line() + 
-  labs(title = "Types of crime by year in the Paris Region")
-plot18 <- ggplot(Dep18, aes(x=Year, y=Rate_per_1k, color=Type)) + 
-  geom_line() + 
-  labs(title = "Types of crime by year in the Cher departement")
-
+  labs(title = "Types of crime by year in Paris and in the Cher department", x = "Year", y = "Crime rate per thousand inhabitants") +
+  theme(legend.position = "bottom") +
+  facet_wrap(~Departement, ncol = 2)
 
 
 #Evolution of unemployement by year
@@ -232,6 +230,11 @@ pal <- colorNumeric("YlOrRd", na.color = "darkgray", NULL)
 
 leaf_map <- leaflet(both_category) %>%
   addTiles() %>%
+  addPolygons(group = "Lepen", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
+              fillColor = ~pal(rescale(Lepen_score)),
+              color = "white",
+              weight = 0.3,
+              label = ~paste0(Dep_name, ": ", Lepen_score)) %>% 
   addPolygons(group = "Unemployment", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
               fillColor = ~pal(rescale(Unemp_2019)),
               color = "white",
@@ -242,11 +245,6 @@ leaf_map <- leaflet(both_category) %>%
               color = "white",
               weight = 0.3,
               label = ~paste0(Dep_name, ": ", (1-Pass_rate))) %>% 
-  addPolygons(group = "Lepen Score", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
-              fillColor = ~pal(rescale(Lepen_score)),
-              color = "white",
-              weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Lepen_score)) %>% 
   addPolygons(group = "Immigration", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
               fillColor = ~pal(rescale(Immig_rate)),
               color = "white",
@@ -267,7 +265,7 @@ leaf_map <- leaflet(both_category) %>%
     pal = pal,
     values = ~rescale(Crime_rate_1k),  # Values are set to the Unemp_2019 column for this legend
     title = "Color scale") |>
-  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School fail rate", "Lepen score", "Immigration", "Density"),
+  addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School fail rate", "Lepen", "Immigration", "Density"),
                    options = layersControlOptions(collapsed = FALSE))
 
 
@@ -287,14 +285,15 @@ Everything_by_town <- read_csv("data_end/Everything_by_town.csv")
 both_town_center <- left_join(Center_city, Everything_by_town, join_by("Town_code")) |>
   na.omit() |>
   filter(!grepl("^97", Town_code)) |>
-  distinct()
+  distinct() |>
+  arrange(Dep_number)
 
 #Create the map for each town
 circle_map <- leaflet() %>%
   addTiles()
 
 #list of department number and names
-grouped <- unique(both_town_center$Dep_name)
+grouped <- paste0(unique(both_town_center$Dep_name), "(", unique(both_town_center$Dep_number), ")")
 list <- unique(both_town_center$Dep_number)
 #add circles for departments using a for loop. and create a group by department
 for (i in 1:length(grouped)) {
@@ -311,9 +310,9 @@ for (i in 1:length(grouped)) {
       weight = 1,
       fillColor = "red",
       stroke = TRUE,
-      color = "red",
-      fillOpacity = 0.2,
-      radius = ~(Rate_per_1k)*1000, #chose the circles radius
+      color = "darkred",
+      fillOpacity = 0.1,
+      radius = ~(Rate_per_1k)*500, #chose the circles radius
       popup = ~paste(Town_name, "<br/> <b>", round(data$Rate_per_1k/1000, 3), " </b>Crimes per capita")
     )
 }

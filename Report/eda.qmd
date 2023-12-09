@@ -56,17 +56,16 @@ The effect of the COVID-19 pandemic can also be observed as most crimes have see
 For example, theft without violence saw a sharp drop and its levels have not gone back to 2019 levels of theft.
 
 The Types of crime committed also depend on the location.
-```{r, echo=FALSE, message=FALSE, fig.show="asis"}
-plot75
-plot18
+```{r, echo=FALSE, message=FALSE}
+Compare_plot
 ```
+
 In these graphs, we can see the difference in the types of crime committed in the Paris department and in the Cher department.
 Cher is sparsely populated department.
 Here we observe that in Paris, theft without violence is the number one committed crime.
 This is surely due to Paris being a big city with many tourists and as such many pickpockets.
 This may not be the case in the Cher region with only 300'000 inhabitants.
 In the Cher, theft is less prevalent with the biggest Crime rate being deliberate destruction and damage.
-Followed by Burglaries.
 
 ### Unemployment
 
@@ -180,8 +179,8 @@ We now compute the distance matrix. Using this distance matrix, we run a hierarc
 
 we get the following dendrogram. 
 
-```{r, message=FALSE, echo=FALSE, results='asis'}
-plot_completeLink
+```{r, message=FALSE, echo=FALSE, results='asis', out.width='70%'}
+plot(Dep_completelink)
 ```
 
 This graph tells us that observation 76 stands out from the rest, Observation 76 is actually Paris. Paris is a clear outlier. 

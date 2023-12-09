@@ -635,13 +635,13 @@ We finally have these datasets.
 
 The Department level
 
-```{r, echo=FALSE, message=FALSE}
-knitr::kable(head(Full_data_dep), format = "html")
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+Interact_everything_by_dep
 ```
 
 The town level
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 knitr::kable(head(Everything_by_town), format = "html")
 ```
 
@@ -649,8 +649,8 @@ As we can see, this dataset includes many towns of very few inhabitants. And man
 
 We finally have this clean dataset:
 
-```{r, echo=FALSE, message=FALSE}
-knitr::kable(head(Crime_per_type_town), format = "html")
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+Interact_crime_per_type_town
 ```
 
 This clean dataset's smallest town is of `r min(Crime_per_type_town$Total_pop)`. This will be a much better dataset to run our regressions on. 

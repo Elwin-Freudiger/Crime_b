@@ -1,7 +1,9 @@
 ---
 title: "What is the impact of socio-economic factors on Criminality in France?"
+author: "Pierre Monari, Elwin Freudiger"
 format: 
   revealjs:
+    transition: fade
     scrollable: true
 editor: visual
 ---
@@ -15,7 +17,9 @@ options(gt.summary.table.width = 0.7)
 
 # Introduction
 
-## Research questions {.smaller}
+![](https://i1.hespress.com/wp-content/uploads/2022/02/france-police-9.jpg)
+
+## Research questions
 
 -   **Can the criminality rate in France be explained using the unemployment rate ?**
 
@@ -63,33 +67,57 @@ Paris is an outlier, proven by clustering
 cluster_map
 ```
 
-## Surprising values
+## Surprising values {.smaller}
 
+::: columns
+::: {.column width="50%"}
 Some villages "Died for France", now have population of 0.
 
 High crime rate in:
 
 -   Touristic destinations
 
--    Airports
+-   Airports
 
 Density varies and may be very low in some towns because of Natural Reserves.
+:::
+
+::: {.column width="50%"}
+::: {layout-nrow="2"}
+![Tourists in Saint-Tropez](https://fyooyzbm.filerobot.com/v7/protec/DATA_ART_11264563-LNvcQAds.jpg?vh=f027d9&ci_seal=ddcf673b32)
+
+![French village destroyed during WW1](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/OrnesDestroyed_village_near_Verdun.jpg/220px-OrnesDestroyed_village_near_Verdun.jpg)
+
+![Vanoise National Park](https://upload.wikimedia.org/wikipedia/commons/0/09/Panorama_au_parc_national_de_la_Vanoise.JPG)
+
+![Charles de Gaulle airport](https://upload.wikimedia.org/wikipedia/commons/8/83/Paris-Charles_de_Gaulle_Airport_Terminal_1%2C_16_June_2013.jpg)
+:::
+:::
+:::
 
 ## Maps
 
 ```{r, echo=FALSE, message=FALSE, results='asis'}
-leaf_cap_map
+leaf_map
 ```
 
-## Regressions
+## Maps (cont.)
+
+```{r, echo=FALSE, message=FALSE, results='asis'}
+circle_map
+```
+
+## Regressions {.smaller}
 
 With all types of crime:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 x <- Full_model %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 y <- Reduce_model %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 
 tbl_merge(
   tbls = list(x, y),
@@ -97,41 +125,85 @@ tbl_merge(
 )
 ```
 
-No issues of multicollinearity (VIF<5) low Adjusted R square.
-New regressions this time for each crime type.
+No issues of multicollinearity (VIF\<5) low Adjusted R square.
 
 ## Assault and Battery
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Assault_model_final %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 ```
 
 ## Burglaries
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Burglary_model_final %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 ```
 
 ## Intentional damage and destructions
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Damage_model_final %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 ```
 
 ## Drug Use
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Drug_model_final %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 ```
-
 
 ## Theft without violence
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Theft_model_final %>% 
-  tbl_regression()
+  tbl_regression() %>% 
+  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
 ```
+
+## Learnings {.smaller}
+
+```{r, echo=FALSE, message=FALSE}
+Summary <- data.frame(
+  Crime_Type = c("Assault and Battery", "Intentional Damage & Destruction", "Burglaries", "Theft without Violence", "Drug Use"),
+  
+  Unemployment = c("Not significant", "Not significant", "Positive", "Not significant", "Negative"),
+  
+  Poverty = c("Positive", "Positive", "Negative", "Not significant", "Positive"),
+  
+  Intensity_of_Poverty = c("Positive", "Positive", "Positive", "Positive", "Positive"),
+  
+  Immigration = c("Postive", "Minimal", "Positive", "Positive", "Positive"),
+  
+  Population_Density = c("Null", "Minimal", "Not significant", "Null", "Null"),
+  
+  Education_Level = c("Positive", "Not significant", "Negative", "Not significant", "Negative"),
+  
+  Election_results = c("Not significant", "Negative", "Not significant", "Negative", "Negative")
+)
+knitr::kable(Summary, format = "html")
+```
+
+## Limits of our study
+
+No information regarding perpetrators.
+
+Origin city of the perpetrator would be useful, crimes are not often committed in the residence city of the perpetrator.
+
+A look at the evolution through the years would be interesting.
+
+Tourism could have been taken as a variable, for example, the number of hotel beds.
+
+## Conclusion
+
+There are many disparities among territories in France.
+
+This study provides insights on the distribution on different variables in the french territory.
+
+Hard to draw conclusion on the impact of those factors.

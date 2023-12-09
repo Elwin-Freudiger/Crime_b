@@ -17,8 +17,6 @@ Dep_dist <- dist(Data_to_cluster, method= "euclidean", diag = FALSE, upper = FAL
 #build dendrogram
 Dep_completelink <- hclust(Dep_dist, method = 'average')
 
-plot_completeLink <- plot(Dep_completelink)
-
 #look who belong to what
 Cluster_numbers <- cutree(Dep_completelink, k= 3)
 
