@@ -29,14 +29,14 @@ We can start to understand that density may be a key factor in determining crime
 
 Evolution of Crime in the 5 most criminal departments
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, out.width= "100%",  out.height= "50%"}
 Most_plot
 ```
 
 Here we can observe that the total crimes in the most criminal departments are lower than what they were twenty years ago in the city of Paris (75) and Marseille (13) but are sensibly the same or higher in the peripheral areas of Paris (92/93) and in the city of Lyon (69).
 This can possibly be explained by the huge increase of density of population in the peripheral areas of big cities in France.
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, out.width= "100%",  out.height= "50%"}
 Least_plot 
 ```
 
@@ -48,7 +48,7 @@ We also observe the small variation due to COVID-19 Pandemic
 
 We start by looking at the evolution of the most common types of crime by year in France.
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, out.width= "100%",  out.height= "50%"}
 evol5
 ```
 
@@ -94,7 +94,7 @@ In the last decade the unemployment rate has been mastered once again until the 
 
 #### Unemployment by department
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, out.width= "100%", out.height= "50%"}
 Bars
 ```
 
@@ -105,7 +105,7 @@ This may be an indication of what we could possibly find with the statistical re
 ### Immigration
 
 We can use a Treemap to visualize the total number of immigrants by Region. Regions in France contain several Departments.
-```{r, message=FALSE, echo=FALSE, results='asis'}
+```{r, message=FALSE, echo=FALSE, fig.align='default', out.width=NULL, fig.show='asis'}
 library(treemap)
 treemap(Immig_tree, 
                 index = "Reg_name", 
@@ -119,17 +119,18 @@ treemap(Immig_tree,
 As we can see, most immigrants are in the Paris area. These visualizations really put into perspective how big the Paris region is compared to the rest of the country.
 
 ## Mapping
-```{r, message=FALSE, echo=FALSE}
-plot_map
-```
-
-This map computes the unemployment percentage in every department.
 
 ```{r, message=FALSE, echo=FALSE}
 crime_map
 ```
 
 This map compute the crime rate in every French department and shows us the important disparity in the amount of crimes committed across the country. As we can see, Paris has a very high crime rate compared to the rest of the departments.
+
+```{r, message=FALSE, echo=FALSE}
+plot_map
+```
+
+This map computes the unemployment percentage in every department, Unemployement is higher in the north and south as well as around Paris.
 
 ```{r, message=FALSE, echo=FALSE}
 lepen_map
@@ -143,8 +144,7 @@ Here those departments are represented with a darker color.
 school_map
 ```
 
-This map shows the school pass rate for each department at the end of middle school. Unfortunately, no clear trend seems to emerge from the map. Futhermore, the difference between the highest value (**0.9305**) and the lowest value (**0.8274**) is only of 10%. This means that all other values are contained within only 10%. Showing them on a map with colors tends to over-exagerate the differences between values. As such, this map has poor vizualization power and may even be considered somewhat misleading.
-
+This map shows the school pass rate for each department at the end of middle school. Unfortunately, no clear trend seems to emerge from the map. Futhermore, the difference between the highest value (**0.9305**) and the lowest value (**0.8274**) is only of 10%. This means that all other values are contained within only 10%. Showing them on a map with colors tends to over-exagerate the differences between values. As such, this map has poor vizualization power.
 
 ```{r, message=FALSE, echo=FALSE}
 immig_map
@@ -153,79 +153,27 @@ immig_map
 Lastly, this map shows us the immigration rate, by department. As we can see, Immigrants are mostly located in the vicinity of the Paris region. Other notable areas of higher immigration are border regions in the south and in the east. 
 
 ```{r, message=FALSE, echo=FALSE}
+density_map
+```
+
+Here the density can be observed, with Paris and it's region being an outlier, it is hard to see the difference between other regions. This maps shows clearly that most people in France live around Paris.
+
+#### Interactive maps
+
+```{r, message=FALSE, echo=FALSE, out.width= NULL}
 leaf_map
 ```
 
 We create a map using leaflet. To display another variable, simply click on the desired variable.
-Here it should be noted that for clarity reasons. As one can see, the values of Paris and sometimes it's region have been set to NA. This has been done because Paris is such an outlier in terms of criminality or density that the color scale is unable to show the differences between the remaining departments. As such, it has been decided to take this value out of the scale for clarity reasons. In previous non-interactive maps, Paris has been assigned it's value. 
+It should be noted that, for clarity reasons, outlier values for Paris regarding Crime rates and Density of population. Have been removed from the color scale. If this hasn't been done, it would be very difficult to see the differences in the remaining lower values.
+To see how not removing those values may look in a map format, please refer to the previous non-interactive maps.
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, out.width= NULL}
 circle_map
 ```
 
 In the above map, one can see the crime rate for many towns in France. To display them, simply click on the desired department.
 It should be noted that not all towns are represented here. Furthermore, the circle center may be slightly off from the city center, this is because the coordinates used are the center of city limits, which often does not line up with the "economical" city center for example.
-
-## Clustering 
-
-We will now run a cluster analysis of each department, we want to see if some departments have simmilarities.
-
-First, we compute the correlation matrix.
-
-```{r, message=FALSE, echo=FALSE, results='asis'}
-knitr::kable(dMatrix, "html")
-```
-
-Density is highly correlated with Crime Rates. In contrast, Density and unemployment have a very low correlation. Other interesting Correlations are the one with Immigration and Crime rates, Unemployment and the Score of Marine Lepen.
-
-### Hierarchical clustering
-We now compute the distance matrix. Using this distance matrix, we run a hierarchical clustering analysis using the average distance method. We get the following dendrogram:
-
-```{r, message=FALSE, echo=FALSE, results='asis', out.width='70%'}
-plot(Dep_completelink)
-```
-
-This graph tells us that observation 76 stands out from the rest, Observation 76 is actually Paris. Paris is a clear outlier. 
-Based on this graph we could try to use 3 clusters. 
-
-We can now visualize this using our 2 most correlated variables, Crime rates and Density.
-
-```{r, message=FALSE, echo=FALSE, results='asis'}
-plot_cluster
-```
-
-This is quite interesting, our 3 clusters are Paris, the Paris region and the rest of France. 
-We can also see this in a map format:
-
-```{r, message=FALSE, echo=FALSE, results='asis'}
-cluster_map
-```
-
-### K-means clustering
-To further our analysis and chose a number of clusters, we will run  K-means analysis with n-start = 25. Our data will also be scaled to reduce differences.
-We will run the same clustering 25 times with different centers as we initialize. Running it 25 times will ensure that we get the best clusters we can. 
-
-We get the following scree plot from our analysis:
-
-```{r, message=FALSE, echo=FALSE, results='asis'}
-scree_plot
-```
-
-Our optimal number of clusters seems to be 6 clusters.
-We'll visualize this using a cluster plot and a facet wrap of Le Pen scores and Unemployment rate.
-
-```{r, message=FALSE, echo=FALSE, results='asis'}
-cluster_plot
-cluster_facet
-```
-
-As before, we will map it for more clarity.
-
-```{r, message=FALSE, echo=FALSE, results='asis'}
-cluster_map_means
-```
-
-Overall, during this clustering exercise, our main learning is that Paris and the agglomeration around are very big compared to the rest of France, so much that it tends skew the analysis.
 
 ## Data distribution by town
 
@@ -297,3 +245,64 @@ Density_immig
 
 Surprisingly here, the town with the most immigrants is Taizé, a religious community where many Christian people from all over the world live. This reminds us that immigrants may come into a foreign country for many reasons and  image that we may have of immigration doesn't always apply. 
 Other towns with a high immigration rate are either located in the Paris region or bordering another country.
+
+## Clustering 
+
+We will now run a cluster analysis of each department, we want to see if some departments have simmilarities.
+
+First, we compute the correlation matrix.
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+knitr::kable(dMatrix, "html")
+```
+
+Density is highly correlated with Crime Rates. In contrast, Density and unemployment have a very low correlation. Other interesting Correlations are the one with Immigration and Crime rates, Unemployment and the Score of Marine Lepen.
+
+### Hierarchical clustering
+We now compute the distance matrix. Using this distance matrix, we run a hierarchical clustering analysis using the average distance method. We get the following dendrogram:
+
+```{r, message=FALSE, echo=FALSE, results='asis', out.width='70%'}
+plot(Dep_completelink)
+```
+
+This graph tells us that observation 76 stands out from the rest, Observation 76 is actually Paris. Paris is a clear outlier. 
+Based on this graph we could try to use 3 clusters. 
+
+We can now visualize this using our 2 most correlated variables, Crime rates and Density.
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+plot_cluster
+```
+
+This is quite interesting, our 3 clusters are Paris, the Paris region and the rest of France. 
+We can also see this in a map format:
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+cluster_map
+```
+
+### K-means clustering
+To further our analysis and chose a number of clusters, we will run  K-means analysis with n-start = 25. Our data will also be scaled to reduce differences.
+We will run the same clustering 25 times with different centers as we initialize. Running it 25 times will ensure that we get the best clusters we can. 
+
+We get the following scree plot from our analysis:
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+scree_plot
+```
+
+Our optimal number of clusters seems to be 6 clusters.
+We'll visualize this using a cluster plot and a facet wrap of Le Pen scores and Unemployment rate.
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+cluster_plot
+cluster_facet
+```
+
+As before, we will map it for more clarity.
+
+```{r, message=FALSE, echo=FALSE, results='asis'}
+cluster_map_means
+```
+
+Overall, during this clustering exercise, our main learning is that Paris and the agglomeration around are very big compared to the rest of France, so much that it tends skew the analysis.

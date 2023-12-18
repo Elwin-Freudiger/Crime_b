@@ -1,3 +1,4 @@
+#load required packages
 source(here::here("Script/setup.R"))
 
 #Load the dataset
@@ -52,7 +53,7 @@ scree_plot <- ggplot(mapping = aes(x = 1:15, y = withins)) +
   theme_minimal() +
   labs(title = "Optimal number of clusters", x= "Number of clusters", y = "Total Within Sum Squares")
 
-#run the kmeans with 5 clusters
+#run the kmeans with 6 clusters
 kcluster <- kmeans(Data_to_cluster, centers = 6, nstart = 25)
 clust_number <- kcluster$cluster
 
@@ -67,7 +68,7 @@ cluster_plot <- ggplot(data_with_clust, aes(x = Lepen_score, y = Unemp_2019, col
 
 cluster_facet <- cluster_plot + facet_wrap(~clust_number, nrow = 2)
 
-#map our new results
+#map of our K-means clustering
 data_cluster_geom_means <- left_join(border, data_with_clust, join_by("Dep_number"))
 
 cluster_map_means <- ggplot() +
@@ -78,4 +79,4 @@ cluster_map_means <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Map of K-means clustering")
+  labs(title = "Map of K-means clustering", fill = "Cluster numbers")

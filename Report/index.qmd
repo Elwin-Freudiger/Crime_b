@@ -8,13 +8,14 @@ format:
     toc: TRUE
     toc-expand: TRUE
     toc-location: left
+    toc-depth: 4
     embed-resources: TRUE 
     number-sections: TRUE
 ---
 
 **Did you know?**
 
-This report is available online [Here](https://elwin-freudiger.github.io/Crime_b/)
+This report is available [online](https://elwin-freudiger.github.io/Crime_b/)
 
 The public repository can also be found here: [Git repository](https://github.com/Elwin-Freudiger/Crime_b)
 

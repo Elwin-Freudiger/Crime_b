@@ -78,7 +78,7 @@ Compare_dep$Type <- English[Compare_dep$Type]
 #plot it. 
 Compare_plot <-  ggplot(Compare_dep, aes(x=(Year+2000), y=Rate_per_1k, color=Type)) + 
   geom_line() + 
-  labs(title = "Types of crime by year in Paris and in the Cher department", x = "Year", y = "Crime rate per thousand inhabitants") +
+  labs(title = "Types of crime by year in the Cher(18) and in Paris(75)", x = "Year", y = "Crime rate per thousand inhabitants") +
   theme(legend.position = "bottom") +
   facet_wrap(~Departement, ncol = 2)
 
@@ -202,17 +202,28 @@ school_map <- ggplot() +
         panel.grid = element_blank()) +
   labs(title = "Middle school pass rate")
 
+#Map density
+density_map <- ggplot() +
+  geom_sf(data = both, aes(fill = Density_2019)) + 
+  scale_fill_gradient2(low = "green", high = "red")+
+  theme(axis.text.x  = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x  = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.background = element_rect(fill = "aliceblue"),
+        panel.grid = element_blank()) +
+  labs(title = "Density by department")
+
 #plot the map with leaflet
 #By department
-#We first divide the values in 10 deciles. This means that our data is divided into 10% of the data ordered
 both_category <- both |> select(Dep_number, Dep_name.x, Unemp_2019, 
                                 Crime_rate_1k, Pass_rate, Lepen_score, 
                                 Immig_rate, Density_2019, geometry) |>
   rename(Dep_name = Dep_name.x) |>
   mutate(Crime_rate_1k = ifelse(Crime_rate_1k >= 100, NA, Crime_rate_1k),
-         Density_2019 = ifelse(Density_2019 > 1000, NA, Density_2019))
+         Density_2019 = ifelse(Density_2019 > 5000, NA, Density_2019))
 
-pal <- colorNumeric("YlOrRd", na.color = "darkgray", NULL)
+pal <- colorNumeric("YlOrRd", na.color = "black", NULL)
 
 leaf_map <- leaflet(both_category) %>%
   addTiles() %>%
@@ -240,16 +251,17 @@ leaf_map <- leaflet(both_category) %>%
               fillColor = ~pal(rescale(Density_2019)),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Density_2019)) %>% 
+              label = ~paste0(Dep_name, ": ", both$Density_2019)) %>% 
   addPolygons(group = "Crime rate", stroke = TRUE, smoothFactor = 0.3, fillOpacity = 0.6,
               fillColor = ~pal(rescale(Crime_rate_1k)),
               color = "white",
               weight = 0.3,
-              label = ~paste0(Dep_name, ": ", Crime_rate_1k)) %>% 
+              label = ~paste0(Dep_name, ": ", both$Crime_rate_1k)) %>% 
   addLegend(
     position = "bottomright",
     pal = pal,
-    values = ~rescale(Crime_rate_1k),  # Values are set to the Unemp_2019 column for this legend
+    values = ~rescale(Crime_rate_1k),
+    labels = "Values over 5'000",# Values are set to the Unemp_2019 column for this legend
     title = "Color scale") |>
   addLayersControl(baseGroups = c("Crime rate", "Unemployment", "School fail rate", "Lepen", "Immigration", "Density"),
                    options = layersControlOptions(collapsed = FALSE))

@@ -195,7 +195,7 @@ This explains why Density may not be the best factor to explain Crime.
 
 In terms of Education level, the data suggests that the population without a diploma doesn't always have the highest crime rates, which might be unexpected.
 For instance, in the case of *Assault and Battery*, our findings indicate that crime rates do relate to education level, but the impact is minimal.
-In many areas across France, especially in the northeastern mining regions, there's a large number of individuals with diplomas, yet the crime rates there is remarkably low.
+In many areas across France, especially in the northeastern mining regions, there's a large number of individuals without diplomas, yet the crime rates there is remarkably low.
 However, in La Courneuve (93) a city in the Paris region with a notably high crime rate, there is a considerable proportion of people without a diploma.
 Furthermore, the absence of a diploma seems to have a negative correlation with Burglary rates, with a significant factor of -17.
 This isn't surprising as it is a wealthier region, implying that cities with a higher education level might be the primary targets for burglaries.
