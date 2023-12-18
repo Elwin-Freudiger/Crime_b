@@ -1,14 +1,4 @@
-#load packages
-library(readxl)
-library(readr)
-library(dplyr)
-library(tidyverse)
-library(caret)
-library(lmtest)
-library(car)
-library(ggcorrplot)
-library(stargazer)
-library(gtsummary)
+source(here::here("Script/setup.R"))
 
 ############
 ############

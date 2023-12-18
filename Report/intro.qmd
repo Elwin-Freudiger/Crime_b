@@ -9,15 +9,14 @@ editor:
 ## Overview and motivations
 
 This project will analyze the factors influencing Criminality in France.
-We chose this Subject because we are both french and criminality
+We chose this subject because we are both french and criminality
 consistently ranks as one of the most important priority for the French
 population. In our study, we wanted to focus on the social and economic
 factors contributing to this issue. France is often regarded as one of
 the major world powers, and yet, it is clear that similarly to the rest
-of the world, there are increasing safety concerns regarding crime.
-Crime is impacting the political landscape very much. This subject has
-also made it's way into everyday discussions as it proves to be a
-polarizing topic. In the last thirty years, Politicians have often
+of the world, there are increasing safety concerns regarding crime. This
+subject has also made it's way into everyday discussions as it proves to
+be a polarizing topic. In the last thirty years, Politicians have often
 promised to tackle crime through several means, and as the population
 wants more to be done against it, the government has often made it one
 of their top priority.
@@ -35,41 +34,42 @@ criminality. Medias have often presented various reasons to explain
 crime, our research will look at those hints and see if they may have
 any statistical significance. It should be noted that data regarding
 "Ethnic origin" is not available, this variable is sometimes singled out
-as one of the driver of criminality and unlike in the United States,
-France has outlawed any form of statistics on this subject. as such, we
-will mostly focus on socio-economics drivers behind crime. France is
-facing substantial socio-economics issues, unemployment, poverty,
-conditions of leaving, and school level. Our project explores the link
-between socio-economic factors and criminality rates. Establishing such
-a link would give a new outlook on crime and its causes. Additionally we
-would like to know whether, this data could be used by the government to
-address public safety. In this project we will get answers regarding the
-core human drivers that push humans to commit crimes and how their
-socio-economic environment or educational path may impact their ability
-to commit crime.
+by some as one of the driver of criminality and unlike in the United
+States, France has outlawed any form of statistics on this subject. as
+such, we will mostly focus on socio-economics drivers behind crime.
+France is facing substantial socio-economics issues, unemployment,
+poverty, conditions of leaving, and school level. Our project explores
+the link between socio-economic factors and criminality rates.
+Establishing such a link would give a new outlook on crime and its
+causes. Additionally we would like to know whether, this data could be
+used by the government to address public safety. In this project we will
+get answers regarding the core human drivers that push humans to commit
+crimes and how their socio-economic environment or educational path may
+impact their ability to commit crime.
 
 ## Associated papers
 
 <https://www.institutpourlajustice.org/content/2017/12/Pauvreté-et-délinquance.pdf>
+<https://www.bfmtv.com/politique/sondages/le-pouvoir-d-achat-reste-de-loin-la-priorite-ndeg1-des-francais-devant-la-securite-en-forte-hausse_AN-202308300557.html>
+<https://www.leparisien.fr/politique/emmanuel-macron-donnera-ce-lundi-une-interview-sur-le-theme-de-la-securite-au-jt-de-france-3-01-10-2023-GYXJJQBWAFDEZBIX2DY3AJ3QJM.php>
 
 ## Research questions
 
 The purpose of this study is to evaluate the impact of different
 socioeconomic factors on criminality in France. We are using for that a
-french government database which divide crimes in 14 categories:
+french government database which divide crimes in 14 categories. In our
+regression analysis, we decided to focus on the five most common types
+of crime:
 
-1.  Destruction and intentional damages
-2.  Thefts without violence against people
-3.  Residential burglaries
-4.  Assault and battery
-5.  Thefts from vehicles
-6.  Domestic assault and battery
-7.  Theft of vehicle accessories
-8.  Other intentional assault and battery
-9.  Sexual violence
-10. Violent robberies without weapons
-11. Drug trafficking
-12. Robbery with weapons
+1.  Assault and Battery
+
+2.  Burglaries
+
+3.  Intentional damage and destructions
+
+4.  Drug use
+
+5.  Theft without violence
 
 We will consider the following macroeconomic variables:
 

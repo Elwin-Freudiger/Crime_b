@@ -17,29 +17,37 @@ options(gt.summary.table.width = 0.7)
 
 # Introduction
 
+::: columns
+::: {.column width="80%"}
 ![](https://i1.hespress.com/wp-content/uploads/2022/02/france-police-9.jpg)
+:::
+
+::: {.column width="20%"}
+![Scan this QR code to access our report](qr.png)
+:::
+:::
 
 ## Research questions
 
--   **Can the criminality rate in France be explained using the unemployment rate ?**
+-   Can the criminality rate in France be explained using the **unemployment rate** ?
 
--   **Can the criminality rate in France be explained using the poverty rate ?**
+-   Can the criminality rate in France be explained using the **poverty rate** ?
 
--   **Can the criminality rate in France be explained using education indicators ?**
+-   Can the criminality rate in France be explained using **education indicators** ?
 
--   **Can the density of population in territories explain criminality ?**
+-   Can the **density of population** in territories explain criminality ?
 
--   **Can the immigration rate explain criminality ?**
+-   Can the **immigration rate** explain criminality ?
 
--   **Can the previous presidential results in territories have an impact on criminality ?**
+-   Can the **previous presidential results** in territories have an impact on criminality ?
 
--   **Is there a correlation between these mentioned variables ?**
+-   Is there a **correlation** between these mentioned variables ?
 
-## Motivations
+------------------------------------------------------------------------
+
+## Motivations and variables used {.smaller}
 
 Crime is a polarizing topic, most people do not agree on what causes crime. A statistical analysis could give leads into the causes of criminality.
-
-# Variables
 
 We will consider the following macroeconomic variables:
 
@@ -101,12 +109,6 @@ Density varies and may be very low in some towns because of Natural Reserves.
 leaf_map
 ```
 
-## Maps (cont.)
-
-```{r, echo=FALSE, message=FALSE, results='asis'}
-circle_map
-```
-
 ## Regressions {.smaller}
 
 With all types of crime:
@@ -127,68 +129,53 @@ tbl_merge(
 
 No issues of multicollinearity (VIF\<5) low Adjusted R square.
 
-## Assault and Battery
+# Learnings
 
-```{r, echo = FALSE, message = FALSE, results='asis'}
-Assault_model_final %>% 
-  tbl_regression() %>% 
-  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
-```
+## Unemployment
 
-## Burglaries
+-   Positive correlation with total crime
 
-```{r, echo = FALSE, message = FALSE, results='asis'}
-Burglary_model_final %>% 
-  tbl_regression() %>% 
-  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
-```
+-   Not significant in the case of Assault and intentional damage
 
-## Intentional damage and destructions
+-   Critical factor for Burglaries and Theft
 
-```{r, echo = FALSE, message = FALSE, results='asis'}
-Damage_model_final %>% 
-  tbl_regression() %>% 
-  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
-```
+## Poverty
 
-## Drug Use
+-   Significant in cases of Assault and intentional damage
 
-```{r, echo = FALSE, message = FALSE, results='asis'}
-Drug_model_final %>% 
-  tbl_regression() %>% 
-  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
-```
+-   Differences between Poverty levels and Intensity of Poverty for burglaries. Poverty levels impact Criminality negatively.
 
-## Theft without violence
+-   We suppose that richer towns are most likely to be burglarized. While intensity of poverty may be an indicator of inequalities
 
-```{r, echo = FALSE, message = FALSE, results='asis'}
-Theft_model_final %>% 
-  tbl_regression() %>% 
-  add_glance_table(include = c(r.squared, adj.r.squared, statistic))
-```
+## Immigration
 
-## Learnings {.smaller}
+-   Minimal influence for Assault and Intentional Damages
 
-```{r, echo=FALSE, message=FALSE}
-Summary <- data.frame(
-  Crime_Type = c("Assault and Battery", "Intentional Damage & Destruction", "Burglaries", "Theft without Violence", "Drug Use"),
-  
-  Unemployment = c("Not significant", "Not significant", "Positive", "Not significant", "Negative"),
-  
-  Poverty = c("Positive", "Positive", "Negative", "Not significant", "Positive"),
-  
-  Intensity_of_Poverty = c("Positive", "Positive", "Positive", "Positive", "Positive"),
-  
-  Immigration = c("Postive", "Minimal", "Positive", "Positive", "Positive"),
-  
-  Population_Density = c("Null", "Minimal", "Not significant", "Null", "Null"),
-  
-  Education_Level = c("Positive", "Not significant", "Negative", "Not significant", "Negative"),
-  
-  Election_results = c("Not significant", "Negative", "Not significant", "Negative", "Negative")
-)
-knitr::kable(Summary, format = "html")
-```
+-   Higher impact in Burglaries, Drug use and Theft.
+
+-   Impact varies considerably depending on the type of crime
+
+## Population density
+
+-   Does not impact Burglaries much.
+
+-   For remaining cases, Density is significant but has a low coefficient
+
+-   Lyon and Marseille have low density, but high crime rates.
+
+## Education levels
+
+-   Regions with low diploma levels are not always more criminal.
+
+-   The northeast, former mining regions have low diploma rates but low criminality Near Paris, low diploma rates but high criminality
+
+-   Negative impact on burglaries and on Drug Use. Might be because richer towns have higher diploma rates and are targeted by burlgaries. The negative impact on Drug Use may be due to drug use being widespread among all social groups.
+
+## Voting Patterns
+
+-   A binary variable, 1 if Marine Le Pen had more than 50% of votes in a town.
+
+-   Usually not significant. Except for Intentional Damage and Drug Use.
 
 ## Limits of our study
 
@@ -199,11 +186,3 @@ Origin city of the perpetrator would be useful, crimes are not often committed i
 A look at the evolution through the years would be interesting.
 
 Tourism could have been taken as a variable, for example, the number of hotel beds.
-
-## Conclusion
-
-There are many disparities among territories in France.
-
-This study provides insights on the distribution on different variables in the french territory.
-
-Hard to draw conclusion on the impact of those factors.

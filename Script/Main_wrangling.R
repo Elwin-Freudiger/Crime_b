@@ -2,11 +2,7 @@
 
 ####################################################################################
 
-#These are our needed packages for the wrangling
-library(readxl)
-library(readr)
-library(dplyr)
-library(tidyverse)
+source(here::here("Script/setup.R"))
 
 ####################################################################################
 ####################################################################################
@@ -492,8 +488,9 @@ Crime_per_type_town <- Crime_type_town |>
 #We put everything on a percent basis
 
 #Put DT interactive tables. If it's not too big
-library(DT)
-Interact_everything_by_dep <- datatable(Full_data_dep)
+Interact_everything_by_dep <- datatable(Full_data_dep) |>
+  formatRound(columns = c(3,6,7,10), digits = 3)
 #Interact_everything_by_town <- datatable(Everything_by_town)
-Interact_crime_per_type_town <- datatable(Crime_per_type_town)
-
+Interact_crime_per_type_town <- datatable(Crime_per_type_town[-1]) |> 
+  formatRound(columns = 4, digits = 0) |>
+  formatRound(columns = c(6:13, 17:18), digits = 4)

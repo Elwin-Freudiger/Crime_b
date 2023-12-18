@@ -1,19 +1,5 @@
-#load all packages needed
-library(readxl)
-library(readr)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(plotly)
-library(gganimate)
-library(gifski)
-library(sf)
-library(ggspatial)
-library(leaflet)
-library(leaflet.extras)
-library(treemap)
-library(scales)
-library(RColorBrewer)
+# all packages are loaded in the setup
+source(here::here("Script/setup.R"))
 
 #Plot the crime rate in 2019 of the most criminal states and least criminal states.
 Crime_2019 <- read.csv(here::here("data_end/Everything_by_dep.csv"))

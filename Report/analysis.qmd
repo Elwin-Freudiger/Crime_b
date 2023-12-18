@@ -6,6 +6,7 @@ editor:
 
 ```{r, echo = FALSE, message = FALSE, include = FALSE}
 source(here::here("Script/Regression.R"))
+source(here::here("Script/setup.R"))
 ```
 
 # Regression
@@ -40,35 +41,29 @@ Subsequently, we conducted a stepwise regression AIC test to identify indispensa
 The initial regression includes the average of all crimes and potential explanatory variables.
 With a formula as seen below:
 
-$RatePer1k = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3Poverty + \beta_4NoDiplomaRate +$
-$\beta_5ImmigrationRate + \beta_5UnemploymentRate + \beta_6IntensityPoverty + \beta_6 Total Pop$
+$RatePer1k = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3Poverty + \beta_4NoDiplomaRate +$ $\beta_5ImmigrationRate + \beta_5UnemploymentRate + \beta_6IntensityPoverty + \beta_6 Total Pop$
 
 Subsequently, we conducted a stepwise regression AIC test to identify indispensable variables, leading to the removal of Win_Lepen, Intensity Poverty, Poverty, and No Diploma Rate.
 
-```{r, results='asis'}
+```{r}
 step(Assault_model_full, scope = list(lower= Assault_model_null, upper=Assault_model_full),
      direction = "backward")
 ```
 
-We find this reduced model.
-compared to our full model
+The goal of the stepwise regression is to only keep useful variables in our regression. Here, the AIC is an indicator that goes up if the regression has some unnecessary variables, the stepwise will check at each step and remove variables if they do not meet the criteria. When the AIC test is at its lowest it means that all the unnecessary variables have been removed.
+
+We find this reduced model:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 x <- Full_model %>% 
-  tbl_regression()
+  tbl_regression()  %>% add_significance_stars() %>% add_vif()
 y <- Reduce_model %>% 
-  tbl_regression()
+  tbl_regression()  %>% add_significance_stars() %>% add_vif()
 
 tbl_merge(
   tbls = list(x, y),
   tab_spanner = c("**Full model**", "**Reduced model**")
 )
-```
-
-VIF analysis for our reduced model
-
-```{r, echo = FALSE, message = FALSE}
-knitr::kable(t(as.data.frame(vif(Reduce_model))), format = "html")
 ```
 
 The remaining significant variables, including Immigration, Unemployment, TotalPop, and Density, passed the Variance Inflation Factor test, ensuring no issues of multicollinearity (VIF score \< 5).
@@ -80,117 +75,81 @@ The regressions presented below have been refined to exclude irrelevant variable
 
 ### Assault and Battery
 
-We run a stepwise regression with Asssault and Battery as the dependent variable
+We run a stepwise regression with Asssault and Battery as the dependent variable:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Assault_model_final %>% 
-  tbl_regression()
-```
-
-VIF analysis
-
-```{r, echo = FALSE, message = FALSE}
-knitr::kable(t(as.data.frame(vif(Assault_model_final))), format = "html")
+  tbl_regression() %>% add_significance_stars() %>% add_vif()
 ```
 
 In the Assault and Battery regression, Density, Poverty, No_Diploma_Rate, and Intensity_Poverty emerged as significant variables, with Intensity_Poverty having the most substantial impact (beta of 8.235).
 The VIF test confirmed the absence of multicollinearity, and the Adjusted R-Squared improved to around 0.37.
 
-Our final formula is the following: 
-$AssaultandBattery = \beta_0 + \beta_1 Density + \beta_2Poverty + \beta_3NoDiplomaRate +$
-$\beta_4ImmigrationRate + \beta_5IntensityPoverty$
+Our final formula is the following: $AssaultandBattery = \beta_0 + \beta_1 Density + \beta_2Poverty + \beta_3NoDiplomaRate +$ $\beta_4ImmigrationRate + \beta_5IntensityPoverty$
 
 ### Burglaries
 
-We run the regression with Burglaries and find this reduced model
+We run the regression with Burglaries and find this reduced model:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Burglary_model_final %>% 
-  tbl_regression()
-```
-
-VIF analysis
-
-```{r, echo = FALSE, message = FALSE}
-knitr::kable(t(as.data.frame(vif(Burglary_model_final))), format = "html")
+  tbl_regression()  %>% add_significance_stars() %>% add_vif()
 ```
 
 For the Burglaries regression, all variables remained highly significant.
 Notably, Poverty and No_Diploma_Rate negatively affected predictions (-19.624/-17.833), while Unemployment had the most significant positive impact (71.162), followed by Immigration (26.937) and Intensity_Poverty (16.391).
 The VIF test assured us of no multicollinearity issues, though the Adjusted R-Squared was approximately 0.19.
 
-Our final formula is the following: 
-$Burglary = \beta_0 + \beta_1Poverty + \beta_2NoDiplomaRate + \beta_3ImmigrationRate +$
-$\beta_4UnemploymentRate + \beta_5IntensityPoverty$
+Our final formula is the following: $Burglary = \beta_0 + \beta_1Poverty + \beta_2NoDiplomaRate + \beta_3ImmigrationRate +$ $\beta_4UnemploymentRate + \beta_5IntensityPoverty$
 
 ### Intentional damage and destructions
 
-We run the model with Damage and Destruction
+We run the model with Damage and Destruction:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Damage_model_final %>% 
-  tbl_regression()
-```
-
-VIF analysis
-
-```{r, echo = FALSE, message = FALSE}
-knitr::kable(t(as.data.frame(vif(Damage_model_final))), format = "html")
+  tbl_regression() %>% add_significance_stars() %>% add_vif()
 ```
 
 In the Intentional Damage and Destruction regression, Poverty, Intensity_Poverty, Density, and somewhat less so Win_Lepen were highly significant.
 Both Poverty and Intensity had a substantial positive impact (\~15), while the impact of Win_Lepen was negligible.
 The VIF test once again confirmed no multicollinearity.
 
-Our final formula is the following: 
-$DamageDestruction = \beta_0 + \beta_1Poverty + \beta_2WinLepen + \beta_3IntensityPoverty + \beta_4 Density$
+Our final formula is the following: $DamageDestruction = \beta_0 + \beta_1Poverty + \beta_2WinLepen + \beta_3IntensityPoverty + \beta_4 Density$
 
 ### Drug Use
 
-We run the model with Drug use as our dependent variable
+We run the model with Drug use as our dependent variable:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Drug_model_final %>% 
-  tbl_regression()
-```
-
-VIF analysis
-
-```{r, echo = FALSE, message = FALSE}
-knitr::kable(t(as.data.frame(vif(Drug_model_final))), format = "html")
+  tbl_regression() %>% add_significance_stars() %>% add_vif()
 ```
 
 For the Drug Use regression, the AIC stepwise regression test retained all variables except TotalPop.
 Poverty and Immigration Rate had the most significant positive impacts (7.769/6.178), while Unemployment had a considerable negative impact (-9.551).
 The VIF test indicated no multicollinearity issues.
 
-Our final formula is the following: 
-$DrugUse = \beta_0 + \beta_1 Density + \beta_2Poverty + \beta_3NoDiplomaRate + \beta_4ImmigrationRate +$ $\beta_5UnemploymentRate + \beta_6WinLepen + \beta_7IntensityPoverty$
+Our final formula is the following: $DrugUse = \beta_0 + \beta_1 Density + \beta_2Poverty + \beta_3NoDiplomaRate + \beta_4ImmigrationRate +$ $\beta_5UnemploymentRate + \beta_6WinLepen + \beta_7IntensityPoverty$
 
 ### Theft without violence
 
-We run the model with Theft as our independent variable
+We run the model with Theft as our independent variable:
 
 ```{r, echo = FALSE, message = FALSE, results='asis'}
 Theft_model_final %>% 
-  tbl_regression()
-```
-
-VIF analysis
-
-```{r, echo = FALSE, message = FALSE}
-knitr::kable(t(as.data.frame(vif(Theft_model_final))), format = "html")
+  tbl_regression() %>% add_significance_stars() %>% add_vif()
 ```
 
 In the Theft without Violence regression, Immigration Rate and Density were the only highly significant variables.
 The positive impact of Immigration_Rate was substantial (\~20), but the low Adjusted R-Squared suggests challenges in interpreting results.
 Nevertheless, the VIF test confirmed no multicollinearity issues in this regression."
 
-Our final formula is the following: 
-$Theft = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3ImmigrationRate +$
-$\beta_4UnemploymentRate + \beta_5IntensityPoverty$
+Our final formula is the following: $Theft = \beta_0 + \beta_1 Density + \beta_2WinLepen + \beta_3ImmigrationRate +$ $\beta_4UnemploymentRate + \beta_5IntensityPoverty$
 
 ## Discussing our results
+
+#### Unemployment
 
 In our initial research, we wanted to understand if Unemployment could predict Crime in France.
 When we analyzed all types of crimes together, we found a connection between Unemployment and Crime.
@@ -202,6 +161,8 @@ This was counterintuitive for our expectations.
 Moreover, concerning *Burglaries* and *Theft without Violence*, Unemployment emerged as a more critical factor.
 It became the primary predictor for the occurrence of these crime types.
 
+#### Poverty
+
 We then delved into the potential impact of Poverty on predicting Crime in France.
 We examined two datasets: one reflecting the number of people affected by poverty in each town ('Poverty_2019') and another showing how far individuals were to the poverty threshold ('Intensity_Poverty').
 Again, we analyzed each crime category separately for accuracy.
@@ -211,8 +172,10 @@ The VIF factor was also under 5 meaning that multicollinearity was not the reaso
 This leads us to the interpretation that when talking about Burglaries, the amount of poor people in a town would have a negative impact since Richer neighbourhoods are more likely to be burglarized.
 In the case of Intensity of Poverty, this varibale is not an indicator of how many people are poor, but rather how poor they are we could assume that the poorest people who burglarize.
 Regarding Drug Use crimes, Poverty emerged as a significant predictor, but with notably lesser impact compared to previous regressions.
-Similarly, when examining 'Theft without Violence,' while 'Intensity_Poverty' showed promise, it didn't reach statistical significance.
+Similarly, when examining *Theft without Violence*, while 'Intensity_Poverty' showed promise, it didn't reach statistical significance.
 In essence, while Poverty and its intensity play substantial roles in predicting criminal behavior in France, their impact varies based on the specific crime type, often leading to conflicting trends.
+
+#### Immigration
 
 Moving on to the impact of immigration on crime rates in France, our analyses revealed nuanced outcomes.
 For instance, in 'Assault and Battery' and 'Intentional Damage and Destruction' cases, the Immigration variable appeared insignificant, with minimal influence.
@@ -220,11 +183,15 @@ However, in Burglaries and Drug-related crimes, Immigration seemed to exert a si
 Nonetheless, its impact on 'Theft without Violence' remained uncertain due to a low Adjusted R-Squared value, cautioning against definitive conclusions.
 Overall, while Immigration played a significant role in some models, its impact varied considerably among different crime types.
 
+#### Population Density
+
 We also explored the role of Population Density in predicting criminal activity.
 Interestingly, Density didn't seem to affect Burglaries much, possibly because criminals find it easier to operate in less crowded, rural areas, For example, in the department of Gironde, where Bordeaux is located, the city with the most burglaries.
 Concerning the remaining crime types, Density is always significant, but has a small coefficient.
 We observe that some of the most criminal cities in France, such as Marseille or Lyon are not very dense.
 This explains why Density may not be the best factor to explain Crime.
+
+#### Education level
 
 In terms of Education level, the data suggests that the population without a diploma doesn't always have the highest crime rates, which might be unexpected.
 For instance, in the case of *Assault and Battery*, our findings indicate that crime rates do relate to education level, but the impact is minimal.
@@ -235,6 +202,8 @@ This isn't surprising as it is a wealthier region, implying that cities with a h
 Regarding Drug Use, it was unexpected to see that the absence of a diploma negatively impacts the regression.
 This could be explained by acknowledging that drug use is widespread among the population in France, affecting even the more educated regions.
 
+#### Election results
+
 Lastly, we explored whether there was a connection between voting patterns in the 2017 presidential election and the crime rates.
 We aimed to understand if the way people voted affected the crimes committed in those areas and if political behavior correlated with observed criminality.
 While the AIC eliminated our Voting variables in most of our regressions, an interesting negative relationship emerged between Marine Le Pen "winning" the city and both *Drug Use* and *Intentional Damage and Destruction* regressions.
@@ -242,3 +211,7 @@ For instance, if a city voted in majority for Marine Le Pen in 2017, it had on a
 That decrease was 0.319.
 in the *Drug Use* category..
 However, apart from these instances, the Le Pen variables weren't significant enough to draw conclusive remarks for our other variables.
+
+#### Correlations 
+
+Regarding the correlation between our variables, we observe an absence of multicollinearity which is very positive. In fact the Variance Inflation Factor shows us that there is no consequent amount of information contained by one of the variables that is also contained by another, the opposite would have been a problem for the quality of our regressions. Nevertheless with the correlation map we discovered that there was an important positive link between Unemployment and Le Pen vote, as much as an important one between Immigration and Density, Poverty and No Diploma rate. Overall, there are some obvious links between our variables but they seem to behave slightly differently in the regressions.
