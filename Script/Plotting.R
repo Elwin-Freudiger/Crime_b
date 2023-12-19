@@ -113,6 +113,7 @@ Immigration_2019 <- read_excel(here::here("Raw_data/Immigration_2019.xlsx"),
                                sheet = "Pop0_R", skip = 2)
 Immig_tree <- Immigration_2019[1:13, 1:2] |>
   rename(Reg_name = `...1`)
+
 #creation of the treemap. it will then be saved as an image.
 treemap(Immig_tree, 
         index = "Reg_name", 
@@ -149,7 +150,7 @@ Everything_by_dep <- read_csv(here::here("data_end/Everything_by_dep.csv"))
 both <- left_join(border, Everything_by_dep, join_by("Dep_number"))
 
 
-#Unemp map
+#Unemployment map map
 plot_map <- ggplot() +
   geom_sf(data = both, aes(fill = Unemp_2019)) + 
   scale_fill_gradient(low = "green", high = "red")+
@@ -159,7 +160,7 @@ plot_map <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Unemployment rate in France")
+  labs(title = "Unemployment rate in France", fill = "Unemployment rate (%)")
 
 #map for the crime rate,
 crime_map <- ggplot() +
@@ -172,7 +173,7 @@ crime_map <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Crime rate in France")
+  labs(title = "Crime rate in France", fill = "Crime rate (Crime/thousand people)")
 
 #map for lepen
 lepen_map <- ggplot() +
@@ -185,7 +186,7 @@ lepen_map <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Score of Marine Lepen")
+  labs(title = "Score of Marine Le Pen", fill = "Marine Le Pen score (%)")
 
 #Map immigration rate
 immig_map <- ggplot() +
@@ -197,7 +198,7 @@ immig_map <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Immigration rate")
+  labs(title = "Immigration rate", fill = "Immigration rate (Immigrants per capita)")
 
 #Map school pass rates
 school_map <- ggplot() +
@@ -209,7 +210,7 @@ school_map <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Middle school pass rate")
+  labs(title = "Middle school pass rate", fill = "Exam pass rate (%)")
 
 #Map density
 density_map <- ggplot() +
@@ -221,7 +222,7 @@ density_map <- ggplot() +
         axis.ticks.y = element_blank(),
         panel.background = element_rect(fill = "aliceblue"),
         panel.grid = element_blank()) +
-  labs(title = "Density by department")
+  labs(title = "Density by department", fill = "Density (People/square km)")
 
 #plot the map with leaflet
 #By department
