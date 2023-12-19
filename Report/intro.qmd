@@ -33,12 +33,13 @@ The goal of our research is to synthesize the main reasons behind
 criminality. Medias have often presented various reasons to explain
 crime, our research will look at those hints and see if they may have
 any statistical significance. It should be noted that data regarding
-"Ethnic origin" is not available, this variable is sometimes singled out
+"Ethnic origin" is not available, this variable is singled out
 by some as one of the driver of criminality and unlike in the United
-States, France has outlawed any form of statistics on this subject. as
+States, France has outlawed any form of statistics on this subject. As
 such, we will mostly focus on socio-economics drivers behind crime.
-France is facing substantial socio-economics issues, unemployment,
-poverty, conditions of leaving, and school level. Our project explores
+
+Overall, France is facing substantial socio-economics issues, unemployment,
+poverty, retirement age, and a decline in the education level. Our project explores
 the link between socio-economic factors and criminality rates.
 Establishing such a link would give a new outlook on crime and its
 causes. Additionally we would like to know whether, this data could be

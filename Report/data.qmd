@@ -7,11 +7,12 @@ source(here::here("Script/setup.R"))
 
 In this section,we will look at our raw datasets, what information they give us, how we wrangle/clean them to arrive at our final dataset. Lastly we will look at the mistakes in our data and any anomalies or outliers we may find.
 
-Firstly, we will use a dataset with values by french state. This dataset will not be used for our Regression analysis as only having 95 observations is not enough to have a good statistical analysis.
-
-
+Before the data cleaning process, two significant choices should be explained. First, we chose to focus on data pertaining to the year 2019. This was decided because 2019 is the closest year before the COVID-19 pandemic. This allows us to have recent data, without having to account for the deep structural effects of the pandemic.
+Secondly, we decided to only focus on metropolitan departments, which can be understood as "mainland" France and excludes outer-seas departments and territories. Two reasons motivate this choice. Firstly, in 2017, Mayotte became a french department, this change would have been to have been accounted for in our analysis. Secondly, significant differences between outer-seas departments and mainland France would make it challenging to generalize any findings for the entirety of France. Outer-seas departments and territories would deserve a distinct analysis.
 
 ## Data by Department
+
+Firstly, we will use a dataset with values by french state. This dataset will not be used for our Regression analysis as only having 95 observations is not enough to have a good statistical analysis.
 
 ### Raw datasets
 
@@ -74,7 +75,7 @@ Source: [2017 Election results by state](https://www.data.gouv.fr/fr/datasets/el
 knitr::kable(head(Immigration_2019), "html")
 ```
 
-Here we take this sheet and look at the number of immigrants by state. According to the documentation, an immigrant is a person born outside of France and living in France, while a foreigner is someone who does not have the french nationality. It should be noted that the label for foreigners and French citizens appears to have been switched in the dataframe. Fortunately, we will only use the number of immigrants for our study.
+Here we take this sheet and look at the number of immigrants by state. According to the documentation, an immigrant is a person born outside of France and living in France, while a foreigner is someone who does not have the french nationality. It should be noted that the label for foreigners and French citizens appears to have been switched in the raw dataset. Fortunately, we will only use the number of immigrants for our study.
 
 Source: [Immigration numbers by departement](https://www.insee.fr/fr/statistiques/6793282?sommaire=6793391#documentation)
 

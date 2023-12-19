@@ -186,8 +186,9 @@ Furthermore, the circle center may be slightly off from the city center, this is
 
 ## Data distribution by town
 
-We will now take a look at our variables to see how our data is distributed and the extreme values that can be found.
-This analysis will be conducted on our dataset with many missing(NA) values, also in part to show why we have chosen to reduce our dataset to bigger towns.
+We will now take a look at our variables to see how our data is distributed.
+We will also analyse some surprising or extreme values that can be found in our data.
+This analysis will be conducted on our dataset with many missing(NA) values, also in part to show why we have chosen to reduce our dataset to towns with more than 1'000 inhabitants
 
 ### Total crime rate
 
@@ -197,12 +198,11 @@ Density_crime_rate
 
 Of our `r nrow(Everything_by_town)` rows, 26,493 rows are equal to 0.
 
-It appears in most of our dataset that the Paris department was an outlier and has very unique values.
-For example for the crime rate Paris has 112 crimes per thousand people which is almost double compared to the second highest values.
+In terms of crime and other variables, Paris appears to be an outlier, with unique values.
+For example Paris has 112 crimes per thousand people which is almost double compared to the second highest value.
 
-It also appears that the crime rate is very high in highly touristic places.
-Some places such as the winter sports resort town of Morzine or Saint-Tropez in the south have a low population during the year but see a large influx of tourists during the summer or winter.
-The criminality there is high because the total number of crimes is high compared to a low overall population.
+It appears that the crime rate is higher in touristic towns.
+Some places such as the winter sports resort town of Morzine or Saint-Tropez in the south have a low population during the year but see a large influx of tourists during the summer or winter. The criminality there is high because the total number of crimes is high compared to a low overall population.
 Same observation for the communes where French airports are located such as Roissy-Charles-de-Gaulle Airport and the Lyon airport.
 All crimes reported in the airport are counted as committed inside the town, with millions of passengers each year, the crime rate is inflated.
 The town of Chessy is also for example home to Disneyland Paris, and sees a high crime rate, with the same reasons as before.
@@ -213,8 +213,10 @@ The town of Chessy is also for example home to Disneyland Paris, and sees a high
 Density_population
 ```
 
-The population dataset also offers some surprises when we found that there were some villages with a population equal to zero.
-We realized after that that it concerns the « Villages morts pour la France », some villages have been totally destroyed during the First World War and the French government decided to keep the memory by naming a mayor for those villages, responsible for the well being of the sanctuary.
+The distribution is skewed by large cities. 
+
+This dataset also offers some surprises. we found that there were some villages with a population equal to zero.
+We realized after that that it concerns the « Villages morts pour la France », some villages have been totally destroyed during the First World War and the French government decided to keep the memory by naming a mayor for those villages, responsible for the well being of various war sanctuaries or memorials.
 
 ### Density
 
@@ -224,7 +226,7 @@ Density_density
 
 The density variable also has her own unique values.
 We found that some large towns in terms of population may have a low density due to the presence of natural reserves and forests on their territory.
-For example, the city of Arles, with a population of 50,454 and a density of only 69.388 habitants per square km.
+For example, the city of Arles, with a population of 50'454 and a density of only 69.388 habitants per square kilometers.
 This is due to the presence of the Camargue natural reserve.
 The most dense towns are usually in the Paris region, with a smaller area.
 This is the case for Levallois-Perret, bordering Paris and our most dense town.
@@ -236,7 +238,7 @@ Density_Lepen
 ```
 
 The scores of Lepen are almost normally distributed.
-Most of her high scores are usually in the northern regions.
+Most of her high scores are usually in the northern regions and also in the south.
 
 ### Poverty
 
@@ -245,7 +247,6 @@ Density_poverty
 ```
 
 Towns with higher levels of poverty are located mostly in the northern parts of France or in the Paris region.
-This is not surprising.
 
 ### Intensity Poverty
 
@@ -257,7 +258,7 @@ This variable is somewhat more surprising, while low intensity of poverty does n
 Among the ten towns with a high intensity of poverty, only one is not located near Switzerland, it is instead located on the border with Luxemburg.
 
 The explanation for this may may be that many inhabitants from border regions work in the neighbouring country, and said regions often have a low unemployment rate.
-In the case of Switzerland and Luxemburg, these country offer higher salaries than Switzerland.
+In the case of Switzerland and Luxemburg, these country offer higher salaries than in France.
 As such, people below the poverty line are further away from the poverty line, resulting in a high intensity of poverty.
 
 ### No diploma
@@ -268,10 +269,10 @@ Density_no_diploma
 
 Towns with a high level people without a diploma are mostly located in former industrial towns and rural areas, where not having a diploma was never a problem.
 As work usually started at a younger age and was passed down, obtaining a diploma was usally not needed.
-For example, the city of Behren-les-forbach, with about 30% of people over 25 without a diploma is a former mining town.
+For example, the city of Behren-les-forbach a former mining town has about 30% of people over 25 years old without a diploma.
 Here work was provided by the mining company, without a need for any diploma.
 As those mines closed all over France, workers were often left without any suitable alternative to work.
-This explains in part the current poverty level of 51%.
+This also explains in part the current poverty level of 51%.
 
 ### Immigration rate
 
@@ -279,13 +280,12 @@ This explains in part the current poverty level of 51%.
 Density_immig
 ```
 
-Surprisingly here, the town with the most immigrants is Taizé, a religious community where many Christian people from all over the world live.
-This reminds us that immigrants may come into a foreign country for many reasons and image that we may have of immigration doesn't always apply.
+In our data, Taizé stands out as the town with the highest immigration rate, This is due to Taizé being home to a religious community with people coming from all over the world. This challenges the stereotype of why immigrants relocate. While many escape conflict or flee instability, in Taizé, it's driven by religious motives.
 Other towns with a high immigration rate are either located in the Paris region or bordering another country.
 
 ## Clustering
 
-We will now run a cluster analysis of each department, we want to see if some departments have simmilarities.
+We will now run a cluster analysis of each department, the goal is to see if any departments have similarities. We have decided to run a cluster analysis on the Department level.
 
 First, we compute the correlation matrix.
 
@@ -293,9 +293,9 @@ First, we compute the correlation matrix.
 knitr::kable(dMatrix, "html")
 ```
 
-Density is highly correlated with Crime Rates.
+As we can see, density is highly correlated with crime rates.
 In contrast, Density and unemployment have a very low correlation.
-Other interesting Correlations are the one with Immigration and Crime rates, Unemployment and the Score of Marine Lepen.
+Other interesting Correlations are Immigration and Crime rates as well as Unemployment and the Score of Marine Le Pen.
 
 ### Hierarchical clustering
 
@@ -307,9 +307,9 @@ We get the following dendrogram:
 plot(Dep_completelink)
 ```
 
-This graph tells us that observation 76 stands out from the rest, Observation 76 is actually Paris.
+This graph tells us that observation 76 stands out from the rest, Observation 76 is Paris.
 Paris is a clear outlier.
-Based on this graph we could try to use 3 clusters.
+Based on this graph we will use 3 clusters.
 
 We can now visualize this using our 2 most correlated variables, Crime rates and Density.
 
@@ -326,9 +326,9 @@ cluster_map
 
 ### K-means clustering
 
-To further our analysis and chose a number of clusters, we will run K-means analysis with n-start = 25.
+To further our analysis, we will run K-means analysis with n-start = 25.
 Our data will also be scaled to reduce differences.
-We will run the same clustering 25 times with different centers as we initialize.
+We will run the same clustering 25 times with different cluster centers as we initialize.
 Running it 25 times will ensure that we get the best clusters we can.
 
 We get the following scree plot from our analysis:
@@ -338,7 +338,7 @@ scree_plot
 ```
 
 Our optimal number of clusters seems to be 6 clusters.
-We'll visualize this using a cluster plot and a facet wrap of Le Pen scores and Unemployment rate.
+We'll visualize this using a cluster plot and a facet wrap of Marine Le Pen scores and Unemployment rate.
 
 ```{r, message=FALSE, echo=FALSE, results='asis'}
 cluster_plot
@@ -351,4 +351,4 @@ As before, we will map it for more clarity.
 cluster_map_means
 ```
 
-Overall, during this clustering exercise, our main learning is that Paris and the agglomeration around are very big compared to the rest of France, so much that it tends skew the analysis.
+Overall, during this clustering exercise, our main learning is that Paris and the agglomeration around are significantly larger compared to the rest of France, so much that it tends skew the analysis.
