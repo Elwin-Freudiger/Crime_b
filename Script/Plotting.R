@@ -113,6 +113,15 @@ Immigration_2019 <- read_excel(here::here("Raw_data/Immigration_2019.xlsx"),
                                sheet = "Pop0_R", skip = 2)
 Immig_tree <- Immigration_2019[1:13, 1:2] |>
   rename(Reg_name = `...1`)
+#creation of the treemap. it will then be saved as an image.
+treemap(Immig_tree, 
+        index = "Reg_name", 
+        vSize = "Immigrés", 
+        type = "index", 
+        width = 800, 
+        height = 400, 
+        title = "Repartition of total of Immigrants by Region")
+
 
 
 #Unemployment of every departement in 2022 interactive graph

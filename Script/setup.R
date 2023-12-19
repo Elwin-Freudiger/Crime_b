@@ -11,7 +11,8 @@ packages <- c(
   "cluster", #for clustering
   "sf",#geojson reading
   "caret", "lmtest", "car", "ggcorrplot", "stargazer", "gtsummary", #for regressions
-  "DT"# interactive tables
+  "DT",# interactive tables
+  "treemap"# treemap
 )
 purrr::walk(packages, library, character.only = TRUE)
 
