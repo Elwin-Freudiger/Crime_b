@@ -1,24 +1,27 @@
+###########################
+###########################
+#This script is for our regression analysis
+###########################
+###########################
+
+#Load our packages and options for our regression analysis
 source(here::here("Script/setup.R"))
 
-############
-############
-#Crime by type
-############
-############
-
-#Load the dataset with types of crime
-
+#Load the dataset
 Crime_type <- read.csv(here::here("data_end/Crime_per_type_town.csv"))
+#only select numerical variables for a correlation analysis
 Crime_num <- Crime_type[5:20]
 
 #We first run a correlation analysis
-
 corr_matrix <- cor(Crime_num)
 #visualize the corrplot
 corplot <- ggcorrplot(corr_matrix)
 
-#First run the thing with overall crime
-#We first create a model with all the explicative variables  
+############
+#Total crime
+############
+
+#Create a model with every variable  
 Full_model <- lm(formula = Rate_per_1k ~ Density_2019 + 
                    Win_Lepen + 
                    Povrety_2019 + 
@@ -29,39 +32,35 @@ Full_model <- lm(formula = Rate_per_1k ~ Density_2019 +
                    Total_pop, 
                  data = Crime_type)
 
-
-#computing the VIF also tells us that there is currently no strong sign of collinearity
-
-#We then create a Null model to mesure the impact of each variable with a stepwise regression 
+#Create a Null model
 Null_model <- lm(formula = Rate_per_1k ~ 1, data = Crime_type)
 
+#Run stepwise regression
 step(Full_model, scope = list(lower= Null_model, upper=Full_model), direction = "backward")
-#The model with forward stepwise shows us that the variables to keep are Density, Poverty, Total pop, 
-#immigration rate, unemployment, poverty intensity
 
-#We will now create a reduce model excluding the no diploma variable 
+#Create a reduced model based on stepwise results
 Reduce_model <- lm(formula = Rate_per_1k ~ Density_2019 + Immig_rate + Unemp_2019 + Total_pop, data = Crime_type)
 
+############
+#Crime by type
+############
 
-#Linear regressions with the type of crimes committed + vif 
+#Now run a regression by type of crime, with top 5 crimes.
 
-#Coups et blessures volontaires/(Assault and battery)
-
+#Assault and battery
+#Full model
 Assault_model_full <- lm(formula= Assault ~ 
                        Density_2019 + Povrety_2019 + No_diploma_rate1k + 
                        Immig_rate + Unemp_2019 + Win_Lepen +
                        Intensity_povrety, data = Crime_type)
-
+#null model
 Assault_model_null <- lm(formula = Assault ~ 1, data =  Crime_type)
 
-#stepwise regression
+#stepwise
 step(Assault_model_full, scope = list(lower= Assault_model_null, upper=Assault_model_full),
      direction = "backward")
 
-#after computing the stepwise regression with the backward
-#method we decided to keep only the Poverty, Immigration, Density, NoDiploma, IntensityPoverty 
-#variables as they are the most useful in the model 
-
+#Final model based on the results of stepwise
 Assault_model_final <- lm(formula= Assault ~ 
                                  Density_2019 +
                                  Povrety_2019 +
@@ -69,8 +68,8 @@ Assault_model_final <- lm(formula= Assault ~
                                  Immig_rate + 
                                  Intensity_povrety, data = Crime_type)
 
-
-#Cambriolages(Burglary)
+#Burglary
+#Full model
 Burglary_model_full <- lm(formula=  Burglary ~ 
                             Density_2019 +  
                             Povrety_2019 +  
@@ -80,12 +79,13 @@ Burglary_model_full <- lm(formula=  Burglary ~
                             Win_Lepen +
                             Intensity_povrety, data = Crime_type)
 
+#Null model
 Burglary_model_null <- lm(formula = Burglary ~ 1, data = Crime_type)
 
+#Stepwise
 step(Burglary_model_full, scope = list(lower = Burglary_model_null, upper = Burglary_model_full),
      direction = "backward")
-#With AIC rate we decide to keep only the following variables: NoDIploma, 
-#Unemployment, Poverty, Immigration, Intensity poverty
+#Final model based on the results of stepwise
 Burglary_model_final <-  lm(formula=  Burglary ~ 
                               Povrety_2019 +  
                               No_diploma_rate1k + 
@@ -93,9 +93,10 @@ Burglary_model_final <-  lm(formula=  Burglary ~
                               Unemp_2019 +
                               Intensity_povrety, data = Crime_type)
 
-#Destructions et dégradations volontaires(willful destruction and damage)
 
 
+#Intentional destruction and damage
+#Full model
 Damage_model_full <- lm(formula=  Damage ~ 
                           Density_2019 +
                           Povrety_2019 +  
@@ -105,15 +106,13 @@ Damage_model_full <- lm(formula=  Damage ~
                           Win_Lepen +
                           Intensity_povrety, data = Crime_type)
 
-
+#Null model
 Damage_model_null <- lm(formula =  Damage ~1, data = Crime_type)
 
-
+#stepwise
 step(Damage_model_full, scope = list(lower= Damage_model_null, upper=Damage_model_full),
      direction = "backward")
-
-#With the AIC we only need to keep the following variables: Poverty, Win Lepen, Density, Intensity Poverty
-
+#Final model based on the results of stepwise
 Damage_model_final <-  lm(formula =  Damage ~ 
                             Povrety_2019 +  
                             Win_Lepen +
@@ -121,7 +120,8 @@ Damage_model_final <-  lm(formula =  Damage ~
                             Density_2019, data = Crime_type)
 
 
-#USAGE DE STUPS(Drug use)
+#Drug use
+#Full model
 Drug_model_full <- lm(formula=  Drugs ~ 
                         Density_2019 +
                         Povrety_2019 + 
@@ -131,17 +131,19 @@ Drug_model_full <- lm(formula=  Drugs ~
                         Win_Lepen +
                         Intensity_povrety, data = Crime_type)
 
+#Null model
 Drug_model_null <- lm(formula =  Drugs ~ 1, data = Crime_type)
 
+#Stepwise
 step(Drug_model_full, scope = list(lower= Drug_model_null, upper = Drug_model_full),
      direction = "backward")
-#With AIC test with stepwise regression we choose to compute all the previous variables established
+#Final model based on the results of stepwise, all variables are kept
 Drug_model_final <-  Drug_model_full
 
 
 
-#Vols(Theft)
-
+#Theft
+#Full model
 Theft_model_full <-  lm(formula=  Theft ~ 
                           Density_2019 +
                           Povrety_2019 +  
@@ -150,13 +152,13 @@ Theft_model_full <-  lm(formula=  Theft ~
                           Unemp_2019 +
                           Win_Lepen +
                           Intensity_povrety, data = Crime_type)
-
+#Null model
 Theft_model_null <-  lm(formula =  Theft ~ 1, data = Crime_type)
 
+#stepwise
 step(Theft_model_full, scope = list(lower= Theft_model_null, upper=Theft_model_full),
      direction = "backward")
-#With AIC test with stepwise regression we chose to keep the following variables for our regression:
-#Immigration, Win Lepen, Density, Unemployment, IntensityPoverty
+#Final model based on the results of stepwise
 Theft_model_final <- lm(formula =  Theft ~ 
                           Immig_rate + 
                           Win_Lepen +
