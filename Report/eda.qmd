@@ -9,7 +9,8 @@ editor:
 ## Visualization
 
 ```{r, echo = FALSE, message = FALSE, include=FALSE}
-load(file = here::here("Report/Data_for_EDA.RData"))
+load(file = here::here("Report/Plot.RData"))
+load(file = here::here("Report/Cluster.RData"))
 source(here::here("Script/setup.R"))
 ```
 
